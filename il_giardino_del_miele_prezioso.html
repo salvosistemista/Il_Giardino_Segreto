@@ -294,7 +294,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.51</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.52</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -695,14 +695,15 @@
       visitsLabel: 'Visite: {n}',
       infoBodyHtml:
         '<p><b>🌱 Semina e raccolta.</b> Scegli un seme dalla barra in basso e tocca un lotto libero per piantarlo. Ogni gusto ha un tempo di crescita diverso: quando il fiore è maturo, toccalo per raccogliere un nuovo vasetto di miele per la tua dispensa.</p>' +
-        '<p><b>🍯 Rarità e fusione.</b> I vasetti raccolti sono di rarità Fresco. Trovando 3 copie identiche (stesso titolo, gusto, rarità e condizione) puoi unirle in un unico vasetto di rarità superiore, spendendo Gocce d\'Oro.</p>' +
+        '<p><b>🌸 Vivaio.</b> I prezzi dei semi cambiano ad ogni stagione: conviene tenerlo d\'occhio per comprare quando costano meno.</p>' +
+        '<p><b>🍯 Rarità e fusione.</b> I vasetti raccolti sono di rarità Fresco. Trovando 3 copie identiche (stesso titolo, gusto, rarità e condizione) puoi unirle in un unico vasetto di rarità superiore, spendendo Gocce d\'Oro — tre scintille colorate dentro il vasetto ti avvisano quando è pronto per la fusione.</p>' +
         '<p><b>🔒 Sblocchi.</b> I gusti Brughiera e Regale si sbloccano ottenendo rispettivamente un vasetto di rarità Ambrato e Dorato. Una volta sbloccati restano tali per sempre.</p>' +
-        '<p><b>🍂 Stagioni.</b> Il tempo scorre in cicli di Primavera, Estate, Autunno e Inverno, ognuna con un bonus diverso su crescita o guadagni.</p>' +
+        '<p><b>🍂 Stagioni.</b> Ogni stagione dura 3 minuti e il tempo scorre in cicli di Primavera, Estate, Autunno e Inverno, ognuna con un bonus diverso su crescita o guadagni. Se chiudi il gioco o torni al menu, al rientro sarà passata esattamente un\'altra stagione, non di più.</p>' +
         '<p><b>🐻 Ospiti.</b> Un orsetto bussa al giardino e resta 1 minuto chiedendo un vasetto di un gusto specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni orsetto parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un vasetto di rarità superiore) in cambio di una ricompensa molto più generosa.</p>' +
         '<p><b>🌧️ Eventi atmosferici.</b> Pioggia e sciami dorati capitano a sorpresa: la pioggia accelera subito i fiori, mentre lo sciame dorato apre una breve finestra da toccare per un bonus di Gocce d\'Oro.</p>' +
         '<p><b>🍯 Dispensa.</b> Qui puoi sfogliare tutti i vasetti raccolti, ordinarli e filtrarli per gusto, rarità o condizione.</p>' +
-        '<p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 16 stagioni (circa 4 anni) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>' +
-        '<p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti vasetti hai raccolto e quanti ne hai donati ai vicini nelle ultime 4 stagioni, e mostra gli orsetti che hai conosciuto con l\'ultimo messaggio di gratitudine che ti hanno lasciato.</p>'
+        '<p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 12 stagioni (circa 3 anni) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>' +
+        '<p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti vasetti hai raccolto e quanti ne hai donati ai vicini nelle ultime 4 stagioni, e mostra gli orsetti che hai conosciuto — con le visite ricevute e l\'ultimo messaggio di gratitudine che ti hanno lasciato.</p>'
     },
     en: {
       pageTitle: 'The Garden of Precious Honey',
@@ -785,20 +786,21 @@
       visitsLabel: 'Visits: {n}',
       infoBodyHtml:
         '<p><b>🌱 Planting & harvesting.</b> Pick a seed from the bar at the bottom and tap an empty plot to plant it. Each flavor has a different growth time: once the flower blooms, tap it to harvest a new jar of honey for your pantry.</p>' +
-        '<p><b>🍯 Rarity & fusion.</b> Harvested jars start at Fresh rarity. Find 3 identical copies (same title, flavor, rarity and condition) to combine them into a single higher-rarity jar, spending Golden Drops.</p>' +
+        '<p><b>🌸 Nursery.</b> Seed prices change with every season — keep an eye out for the cheapest moment to buy.</p>' +
+        '<p><b>🍯 Rarity & fusion.</b> Harvested jars start at Fresh rarity. Find 3 identical copies (same title, flavor, rarity and condition) to combine them into a single higher-rarity jar, spending Golden Drops — three colored sparkles inside the jar let you know when it\'s ready to be combined.</p>' +
         '<p><b>🔒 Unlocks.</b> The Heather and Royal flavors unlock once you get an Amber and a Golden jar respectively. Once unlocked, they stay unlocked forever.</p>' +
-        '<p><b>🍂 Seasons.</b> Time flows in cycles of Spring, Summer, Autumn and Winter, each with a different bonus to growth or earnings.</p>' +
+        '<p><b>🍂 Seasons.</b> Each season lasts 3 minutes, flowing in cycles of Spring, Summer, Autumn and Winter, each with a different bonus to growth or earnings. If you close the game or go back to the menu, exactly one more season will have passed when you return — never more.</p>' +
         '<p><b>🐻 Guests.</b> A little bear knocks on the garden and stays for 1 minute asking for a jar of a specific flavor (if you\'re already talking to them when time runs out, you can still hand it over). If you have nothing to give and close with "Maybe Later", they\'ll leave after 5 seconds. Every bear starts as a Stranger and visits more often as their bond grows: Acquaintance after 3 gifts, Friend after 5 more, Dear Friend after 8 more — and their visits become more frequent at each level. At higher levels you may receive a surprise gift on top of the boost, and a Dear Friend sometimes brings a special request (a higher-rarity jar) in exchange for a much bigger reward.</p>' +
         '<p><b>🌧️ Weather events.</b> Rain and golden swarms show up unannounced: rain instantly speeds up your flowers, while the golden swarm opens a brief window you can tap for a Golden Drops bonus.</p>' +
         '<p><b>🍯 Pantry.</b> Here you can browse every jar you\'ve collected, sort them and filter by flavor, rarity or condition.</p>' +
-        '<p><b>🍯 Decay.</b> A jar that\'s neither delivered nor re-combined within 16 seasons (about 4 years) gets given to the neighbors and leaves your collection. Every fusion resets the countdown.</p>' +
-        '<p><b>📔 Diary.</b> Tells you how many seeds you\'ve planted, how many jars you\'ve harvested, and how many you\'ve given to the neighbors over the last 4 seasons, and shows the bears you\'ve met along with the last thank-you message they left you.</p>'
+        '<p><b>🍯 Decay.</b> A jar that\'s neither delivered nor re-combined within 12 seasons (about 3 years) gets given to the neighbors and leaves your collection. Every fusion resets the countdown.</p>' +
+        '<p><b>📔 Diary.</b> Tells you how many seeds you\'ve planted, how many jars you\'ve harvested, and how many you\'ve given to the neighbors over the last 4 seasons, and shows the bears you\'ve met — including how many times they\'ve visited and the last thank-you message they left you.</p>'
     }
   };
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.51';
+  var GAME_VERSION = '1.52';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';

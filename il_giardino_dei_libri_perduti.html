@@ -295,7 +295,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.51</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.52</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -674,14 +674,15 @@
       visitsLabel: 'Visite: {n}',
       infoBodyHtml:
         '<p><b>🌱 Semina e raccolta.</b> Scegli un seme dalla barra in basso e tocca un lotto libero per piantarlo. Ogni genere ha un tempo di crescita diverso: quando la pianta è matura, toccala per raccogliere un nuovo libro per il tuo catalogo.</p>' +
-        '<p><b>📖 Rarità e fusione.</b> I libri raccolti sono di rarità Comune. Trovando 3 copie identiche (stesso titolo, genere, rarità e condizione) puoi rilegarle in un unico volume di rarità superiore, spendendo Polvere di Pagine.</p>' +
+        '<p><b>🌿 Vivaio.</b> I prezzi dei semi cambiano ad ogni stagione: conviene tenerlo d\'occhio per comprare quando costano meno.</p>' +
+        '<p><b>📖 Rarità e fusione.</b> I libri raccolti sono di rarità Comune. Trovando 3 copie identiche (stesso titolo, genere, rarità e condizione) puoi rilegarle in un unico volume di rarità superiore, spendendo Polvere di Pagine — tre scintille colorate in cima alla costina ti avvisano quando un libro è pronto per la fusione.</p>' +
         '<p><b>🔒 Sblocchi.</b> I generi Mistero e Filosofia si sbloccano ottenendo rispettivamente un libro di rarità Antico e Raro. Una volta sbloccati restano tali per sempre.</p>' +
-        '<p><b>🍂 Stagioni.</b> Il tempo scorre in cicli di Primavera, Estate, Autunno e Inverno, ognuna con un bonus diverso su crescita o guadagni.</p>' +
+        '<p><b>🍂 Stagioni.</b> Ogni stagione dura 3 minuti e il tempo scorre in cicli di Primavera, Estate, Autunno e Inverno, ognuna con un bonus diverso su crescita o guadagni. Se chiudi il gioco o torni al menu, al rientro sarà passata esattamente un\'altra stagione, non di più.</p>' +
         '<p><b>🦉 Ospiti.</b> Un ospite bussa al giardino e resta 1 minuto chiedendo un libro di un genere specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni ospite parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un libro di rarità superiore) in cambio di una ricompensa molto più generosa.</p>' +
         '<p><b>🌧️ Eventi atmosferici.</b> Pioggia e vento capitano a sorpresa: la pioggia accelera subito le piante, mentre il vento apre una breve finestra da toccare per un bonus di valuta.</p>' +
         '<p><b>📚 Libreria.</b> Qui puoi sfogliare tutti i libri raccolti, ordinarli e filtrarli per genere, rarità o condizione.</p>' +
-        '<p><b>📚 Deperimento.</b> Un libro non consegnato o rifuso entro 16 stagioni (circa 4 anni) viene donato alla biblioteca per il restauro e lascia la tua libreria. Ogni fusione resetta il conto alla rovescia.</p>' +
-        '<p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti libri hai raccolto e quanti ne hai donati alla biblioteca nelle ultime 4 stagioni, e mostra gli ospiti che hai conosciuto con l\'ultimo messaggio di gratitudine che ti hanno lasciato.</p>'
+        '<p><b>📚 Deperimento.</b> Un libro non consegnato o rifuso entro 12 stagioni (circa 3 anni) viene donato alla biblioteca per il restauro e lascia la tua libreria. Ogni fusione resetta il conto alla rovescia.</p>' +
+        '<p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti libri hai raccolto e quanti ne hai donati alla biblioteca nelle ultime 4 stagioni, e mostra gli ospiti che hai conosciuto — con le visite ricevute e l\'ultimo messaggio di gratitudine che ti hanno lasciato.</p>'
     },
     en: {
       pageTitle: 'The Garden of Lost Books - Advanced Edition',
@@ -764,20 +765,21 @@
       visitsLabel: 'Visits: {n}',
       infoBodyHtml:
         '<p><b>🌱 Planting & harvesting.</b> Pick a seed from the bar at the bottom and tap an empty plot to plant it. Each genre has a different growth time: once the plant is ready, tap it to harvest a new book for your library.</p>' +
-        '<p><b>📖 Rarity & fusion.</b> Harvested books start at Common rarity. Find 3 identical copies (same title, genre, rarity and condition) to bind them into a single higher-rarity volume, spending Page Dust.</p>' +
+        '<p><b>🌿 Nursery.</b> Seed prices change with every season — keep an eye out for the cheapest moment to buy.</p>' +
+        '<p><b>📖 Rarity & fusion.</b> Harvested books start at Common rarity. Find 3 identical copies (same title, genre, rarity and condition) to bind them into a single higher-rarity volume, spending Page Dust — three colored sparkles at the top of the spine let you know when a book is ready to be bound.</p>' +
         '<p><b>🔒 Unlocks.</b> The Mystery and Philosophy genres unlock once you get an Ancient and a Rare book respectively. Once unlocked, they stay unlocked forever.</p>' +
-        '<p><b>🍂 Seasons.</b> Time flows in cycles of Spring, Summer, Autumn and Winter, each with a different bonus to growth or earnings.</p>' +
+        '<p><b>🍂 Seasons.</b> Each season lasts 3 minutes, flowing in cycles of Spring, Summer, Autumn and Winter, each with a different bonus to growth or earnings. If you close the game or go back to the menu, exactly one more season will have passed when you return — never more.</p>' +
         '<p><b>🦉 Guests.</b> A guest knocks on the garden and stays for 1 minute asking for a book of a specific genre (if you\'re already talking to them when time runs out, you can still hand it over). If you have nothing to give and close with "Maybe Later", they\'ll leave after 5 seconds. Every guest starts as a Stranger and visits more often as their bond grows: Acquaintance after 3 gifts, Friend after 5 more, Dear Friend after 8 more — and their visits become more frequent at each level. At higher levels you may receive a surprise gift on top of the boost, and a Dear Friend sometimes brings a special request (a higher-rarity book) in exchange for a much bigger reward.</p>' +
         '<p><b>🌧️ Weather events.</b> Rain and wind show up unannounced: rain instantly speeds up your plants, while the wind opens a brief window you can tap for a currency bonus.</p>' +
         '<p><b>📚 Library.</b> Here you can browse every book you\'ve collected, sort them and filter by genre, rarity or condition.</p>' +
-        '<p><b>📚 Decay.</b> A book that\'s neither delivered nor re-fused within 16 seasons (about 4 years) gets donated to the library for restoration and leaves your collection. Every fusion resets the countdown.</p>' +
-        '<p><b>📔 Diary.</b> Tells you how many seeds you\'ve planted, how many books you\'ve harvested, and how many you\'ve donated to the library over the last 4 seasons, and shows the guests you\'ve met along with the last thank-you message they left you.</p>'
+        '<p><b>📚 Decay.</b> A book that\'s neither delivered nor re-fused within 12 seasons (about 3 years) gets donated to the library for restoration and leaves your collection. Every fusion resets the countdown.</p>' +
+        '<p><b>📔 Diary.</b> Tells you how many seeds you\'ve planted, how many books you\'ve harvested, and how many you\'ve donated to the library over the last 4 seasons, and shows the guests you\'ve met — including how many times they\'ve visited and the last thank-you message they left you.</p>'
     }
   };
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.51';
+  var GAME_VERSION = '1.52';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
