@@ -21,6 +21,22 @@
   }
   #topBar div { text-shadow: 0 0 4px rgba(255,255,255,0.6); }
 
+  .seasonClock {
+    width: 1.15rem; height: 1.15rem; border-radius: 50%;
+    border: 1.5px solid #445533; position: relative;
+    background: rgba(255,255,255,0.25); box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15); flex-shrink: 0;
+  }
+  .seasonClock::before {
+    content: ''; position: absolute; width: 2.5px; height: 2.5px; border-radius: 50%;
+    background: #445533; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 3;
+  }
+  .seasonClockHand {
+    position: absolute; width: 1.5px; height: 42%; background: #8a6240;
+    top: 8%; left: calc(50% - 0.75px); transform-origin: bottom center;
+    z-index: 2; transform: rotate(0deg);
+  }
+
   #guestBubble {
     position: fixed; top: max(50px, calc(env(safe-area-inset-top) + 40px)); right: 16px;
     z-index: 10; background: #fffdf3; border: 2px solid #8b6d1c; border-radius: 50%;
@@ -236,7 +252,12 @@
 
 <div id="topBar">
   <div style="display:flex; flex-direction:column; align-items:flex-start;">
-    <div id="seasonDisplay" onclick="onSeasonNameClick()" style="pointer-events:auto; cursor:pointer;">🌱 Primavera</div>
+    <div style="display:flex; align-items:center; gap:6px; pointer-events:auto;">
+      <div id="seasonDisplay" onclick="onSeasonNameClick()" style="cursor:pointer;">🌱 Primavera</div>
+      <div class="seasonClock" id="seasonClock" onclick="onSeasonNameClick()" title="" style="cursor:pointer;">
+        <div class="seasonClockHand" id="seasonClockHand"></div>
+      </div>
+    </div>
     <div id="seasonBonusReminder" style="font-size:0.68rem; opacity:0; transition:opacity 0.6s; margin-top:6px; max-width:56vw;"></div>
   </div>
   <div id="currencyTopDisplay">Gocce d’Oro: 0</div>
@@ -294,7 +315,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.53</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.54</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -805,7 +826,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.53';
+  var GAME_VERSION = '1.54';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -1192,6 +1213,14 @@
     var s = currentSeason();
     document.getElementById('seasonDisplay').textContent = s.icon + ' ' + seasonDisplayName(s);
     document.getElementById('seasonDisplay').title = seasonDescText(s);
+
+    // Orologio stagionale: la lancetta compie un giro completo nella durata di una stagione
+    var seasonProgress = ((vnow() - gameStart) % SEASON_LENGTH) / SEASON_LENGTH;
+    var seasonDegrees = seasonProgress * 360;
+    document.getElementById('seasonClockHand').style.transform = 'rotate(' + seasonDegrees + 'deg)';
+    document.getElementById('seasonClock').style.background =
+      'conic-gradient(#ffffff ' + seasonDegrees + 'deg, rgba(255,255,255,0.25) ' + seasonDegrees + 'deg)';
+    document.getElementById('seasonClock').title = seasonDescText(s);
 
     if (s.name !== lastSeasonName) {
       lastSeasonName = s.name;
