@@ -294,7 +294,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.52</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.53</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -367,6 +367,7 @@
 <div class="overlay hidden" id="diaryScreen">
   <h1 id="diaryTitle">DIARIO</h1>
   <div id="diaryNarrative" style="max-width:440px; text-align:left; font-size:0.85rem; line-height:1.75; color:#4f5c3c;"></div>
+  <div id="diaryGuestIntro" style="display:none; max-width:440px; text-align:left; font-size:0.85rem; font-style:italic; line-height:1.6; color:#4f5c3c; margin-top:14px;"></div>
   <div id="diaryGuestsSection" style="display:none; margin-top:20px; width:100%; max-width:440px;">
     <h3 id="diaryKnownGuests" style="font-size:0.95rem; margin-bottom:10px; color:#566b3a; text-align:center;">Orsetti conosciuti</h3>
     <div style="display:flex; align-items:center; justify-content:center; gap:14px;">
@@ -693,6 +694,8 @@
       deliverBtn: 'Consegna',
       versionLabel: 'Versione',
       visitsLabel: 'Visite: {n}',
+      diaryIntro: 'Caro diario, il tempo vola quando ci si circonda di bellezza. Sono già passate {n} intere stagioni da quando ho iniziato a godermi questo piccolo angolo di pace, guardando la terra cambiare colore e i giorni scorrere lenti.',
+      diaryGuestIntro: 'Quello che invece non è un sogno è che c\'è qualcuno che viene a trovarmi...',
       infoBodyHtml:
         '<p><b>🌱 Semina e raccolta.</b> Scegli un seme dalla barra in basso e tocca un lotto libero per piantarlo. Ogni gusto ha un tempo di crescita diverso: quando il fiore è maturo, toccalo per raccogliere un nuovo vasetto di miele per la tua dispensa.</p>' +
         '<p><b>🌸 Vivaio.</b> I prezzi dei semi cambiano ad ogni stagione: conviene tenerlo d\'occhio per comprare quando costano meno.</p>' +
@@ -784,6 +787,8 @@
       deliverBtn: 'Deliver',
       versionLabel: 'Version',
       visitsLabel: 'Visits: {n}',
+      diaryIntro: "Dear diary, time flies when you surround yourself with beauty. {n} whole seasons have already passed since I started enjoying this little corner of peace, watching the earth change color and the days drift slowly by.",
+      diaryGuestIntro: "What isn't a dream, though, is that someone comes to visit me...",
       infoBodyHtml:
         '<p><b>🌱 Planting & harvesting.</b> Pick a seed from the bar at the bottom and tap an empty plot to plant it. Each flavor has a different growth time: once the flower blooms, tap it to harvest a new jar of honey for your pantry.</p>' +
         '<p><b>🌸 Nursery.</b> Seed prices change with every season — keep an eye out for the cheapest moment to buy.</p>' +
@@ -800,7 +805,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.52';
+  var GAME_VERSION = '1.53';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -1518,7 +1523,8 @@
 
   function renderDiaryNarrative() {
     var idx0 = currentSeasonIndex();
-    var html = '';
+    var totalSeasons = idx0 + 1;
+    var html = '<p>' + ui('diaryIntro').replace('{n}', totalSeasons) + '</p>';
     for (var i = 0; i < 4; i++) {
       var idx = idx0 - i;
       var s = SEASONS[((idx % 4) + 4) % 4];
@@ -1538,7 +1544,10 @@
   function renderDiaryGuests() {
     var met = metGuestList();
     var section = document.getElementById('diaryGuestsSection');
-    if (met.length === 0) { section.style.display = 'none'; return; }
+    var introEl = document.getElementById('diaryGuestIntro');
+    if (met.length === 0) { section.style.display = 'none'; introEl.style.display = 'none'; return; }
+    introEl.style.display = 'block';
+    introEl.textContent = ui('diaryGuestIntro');
     section.style.display = 'block';
     if (diaryGuestIndex >= met.length) diaryGuestIndex = 0;
     var g = met[diaryGuestIndex];
