@@ -276,6 +276,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.40</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -672,6 +673,7 @@
       boundMasterpiece: 'Miscela Impareggiabile',
       hasteSuffix: ' ⚡ (Crescita x{mult}: {n}s)',
       deliverBtn: 'Consegna',
+      versionLabel: 'Versione',
       infoBodyHtml:
         '<p><b>🌱 Semina e raccolta.</b> Scegli un seme dalla barra in basso e tocca un lotto libero per piantarlo. Ogni gusto ha un tempo di crescita diverso: quando il fiore è maturo, toccalo per raccogliere un nuovo vasetto di miele per la tua dispensa.</p>' +
         '<p><b>🍯 Rarità e fusione.</b> I vasetti raccolti sono di rarità Fresco. Trovando 3 copie identiche (stesso titolo, gusto, rarità e condizione) puoi unirle in un unico vasetto di rarità superiore, spendendo Gocce d\'Oro.</p>' +
@@ -760,6 +762,7 @@
       boundMasterpiece: 'Incomparable Blend',
       hasteSuffix: ' ⚡ (Growth x{mult}: {n}s)',
       deliverBtn: 'Deliver',
+      versionLabel: 'Version',
       infoBodyHtml:
         '<p><b>🌱 Planting & harvesting.</b> Pick a seed from the bar at the bottom and tap an empty plot to plant it. Each flavor has a different growth time: once the flower blooms, tap it to harvest a new jar of honey for your pantry.</p>' +
         '<p><b>🍯 Rarity & fusion.</b> Harvested jars start at Fresh rarity. Find 3 identical copies (same title, flavor, rarity and condition) to combine them into a single higher-rarity jar, spending Golden Drops.</p>' +
@@ -774,6 +777,8 @@
   };
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
+
+  var GAME_VERSION = '1.40';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -855,6 +860,7 @@
     document.getElementById('diaryKnownGuests').textContent = ui('diaryKnownGuests');
     document.getElementById('btnDiaryClose').textContent = ui('btnDiaryClose');
     document.getElementById('introPhrase').textContent = ui('introPhrase');
+    document.getElementById('versionLabel').textContent = ui('versionLabel') + ' ' + GAME_VERSION;
   }
 
   var gameStart, currency, seedInventory, plots, catalog, selectedGenre;

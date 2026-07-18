@@ -277,6 +277,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.40</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -651,6 +652,7 @@
       boundMasterpiece: 'Capolavoro Rilegato',
       hasteSuffix: ' ⚡ (Crescita x{mult}: {n}s)',
       deliverBtn: 'Consegna',
+      versionLabel: 'Versione',
       infoBodyHtml:
         '<p><b>🌱 Semina e raccolta.</b> Scegli un seme dalla barra in basso e tocca un lotto libero per piantarlo. Ogni genere ha un tempo di crescita diverso: quando la pianta è matura, toccala per raccogliere un nuovo libro per il tuo catalogo.</p>' +
         '<p><b>📖 Rarità e fusione.</b> I libri raccolti sono di rarità Comune. Trovando 3 copie identiche (stesso titolo, genere, rarità e condizione) puoi rilegarle in un unico volume di rarità superiore, spendendo Polvere di Pagine.</p>' +
@@ -739,6 +741,7 @@
       boundMasterpiece: 'Bound Masterpiece',
       hasteSuffix: ' ⚡ (Growth x{mult}: {n}s)',
       deliverBtn: 'Deliver',
+      versionLabel: 'Version',
       infoBodyHtml:
         '<p><b>🌱 Planting & harvesting.</b> Pick a seed from the bar at the bottom and tap an empty plot to plant it. Each genre has a different growth time: once the plant is ready, tap it to harvest a new book for your library.</p>' +
         '<p><b>📖 Rarity & fusion.</b> Harvested books start at Common rarity. Find 3 identical copies (same title, genre, rarity and condition) to bind them into a single higher-rarity volume, spending Page Dust.</p>' +
@@ -753,6 +756,8 @@
   };
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
+
+  var GAME_VERSION = '1.40';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -834,6 +839,7 @@
     document.getElementById('diaryKnownGuests').textContent = ui('diaryKnownGuests');
     document.getElementById('btnDiaryClose').textContent = ui('btnDiaryClose');
     document.getElementById('introPhrase').textContent = ui('introPhrase');
+    document.getElementById('versionLabel').textContent = ui('versionLabel') + ' ' + GAME_VERSION;
   }
 
   var gameStart, currency, seedInventory, plots, catalog, selectedGenre;
