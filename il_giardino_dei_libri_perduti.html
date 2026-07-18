@@ -218,7 +218,7 @@
 
 <div id="topBar">
   <div style="display:flex; flex-direction:column; align-items:flex-start;">
-    <div id="seasonDisplay">🌱 Primavera</div>
+    <div id="seasonDisplay" onclick="onSeasonNameClick()" style="pointer-events:auto; cursor:pointer;">🌱 Primavera</div>
     <div id="seasonBonusReminder" style="font-size:0.68rem; opacity:0; transition:opacity 0.6s; margin-top:6px; max-width:56vw;"></div>
   </div>
   <div id="currencyTopDisplay">Polvere di Pagine: 0</div>
@@ -379,12 +379,12 @@
 
   // ---------- parametri di crescita ----------
   var GENRES = {
-    fiaba:      { name:'Fiaba',      color:'#d88ab0', growTime:60,  cost:1 },
-    poesia:     { name:'Poesia',     color:'#d9b34a', growTime:82.5,cost:8 },
-    amore:      { name:'Amore',      color:'#c0574a', growTime:105, cost:10 },
-    avventura:  { name:'Avventura',  color:'#5aa06a', growTime:135, cost:12 },
-    mistero:    { name:'Mistero',    color:'#6a6ac0', growTime:165, cost:15 },
-    filosofia:  { name:'Filosofia',  color:'#8a8a9a', growTime:210, cost:20 }
+    fiaba:      { name:'Fiaba',      color:'#d88ab0', growTime:60 },
+    poesia:     { name:'Poesia',     color:'#d9b34a', growTime:82.5 },
+    amore:      { name:'Amore',      color:'#c0574a', growTime:105 },
+    avventura:  { name:'Avventura',  color:'#5aa06a', growTime:135 },
+    mistero:    { name:'Mistero',    color:'#6a6ac0', growTime:165 },
+    filosofia:  { name:'Filosofia',  color:'#8a8a9a', growTime:210 }
   };
   var GENRE_KEYS = Object.keys(GENRES);
 
@@ -481,6 +481,17 @@
     { name:'Inverno',   icon:'❄️', tint:'#dce8ec', desc:'Bonus: Crescita +20% per Mistero e Filosofia', friendlyMsg:'L\'Inverno aiuta Mistero e Filosofia a crescere più in fretta.' }
   ];
   var SEASON_LENGTH = 120000; 
+
+  // Prezzi dei semi: cambiano ad ogni stagione
+  var SEASON_PRICES = {
+    Primavera: { fiaba:2, poesia:8,  amore:10, avventura:12, mistero:15, filosofia:20 },
+    Estate:    { fiaba:1, poesia:10, amore:12, avventura:20, mistero:12, filosofia:18 },
+    Autunno:   { fiaba:1, poesia:8,  amore:15, avventura:14, mistero:16, filosofia:18 },
+    Inverno:   { fiaba:2, poesia:8,  amore:15, avventura:15, mistero:18, filosofia:20 }
+  };
+  function seasonPrice(genreKey) {
+    return SEASON_PRICES[currentSeason().name][genreKey];
+  }
 
   var SAVE_KEY = 'giardinoLibri_save';
   var gameStart, currency, seedInventory, plots, catalog, selectedGenre;
@@ -727,6 +738,21 @@
     return false;
   }
 
+  function showSeasonReminder(s) {
+    var reminder = document.getElementById('seasonBonusReminder');
+    if (!s.friendlyMsg) return;
+    reminder.textContent = s.friendlyMsg;
+    reminder.style.opacity = '1';
+    clearTimeout(seasonReminderTimer);
+    seasonReminderTimer = setTimeout(function() {
+      reminder.style.opacity = '0';
+    }, 30000);
+  }
+
+  window.onSeasonNameClick = function() {
+    showSeasonReminder(currentSeason());
+  };
+
   function updateHUD() {
     var hasteText = "";
     if (Date.now() < growthHasteUntil) {
@@ -740,15 +766,7 @@
 
     if (s.name !== lastSeasonName) {
       lastSeasonName = s.name;
-      var reminder = document.getElementById('seasonBonusReminder');
-      if (s.friendlyMsg) {
-        reminder.textContent = s.friendlyMsg;
-        reminder.style.opacity = '1';
-        clearTimeout(seasonReminderTimer);
-        seasonReminderTimer = setTimeout(function() {
-          reminder.style.opacity = '0';
-        }, 30000);
-      }
+      showSeasonReminder(s);
     }
 
     renderSeedBar();
@@ -1443,7 +1461,7 @@
         infoDiv.appendChild(infoSpan);
 
         var btn = document.createElement('button');
-        btn.textContent = '✧ ' + def.cost;
+        btn.textContent = '✧ ' + seasonPrice(g);
         btn.onclick = function() { buySeed(g); };
 
         row.appendChild(infoDiv);
@@ -1462,16 +1480,18 @@
     GENRE_KEYS.forEach(function(g) {
       var ref = shopRowRefs[g];
       if (!ref) return; // riga bloccata, statica: nulla da aggiornare
+      var price = seasonPrice(g);
       ref.infoSpan.textContent = 'Cresce in ' + ref.def.growTime + 's · In possesso: ' + seedInventory[g];
-      ref.btn.disabled = currency < ref.def.cost;
+      ref.btn.textContent = '✧ ' + price;
+      ref.btn.disabled = currency < price;
     });
   }
   
   window.buySeed = function(g) {
     if(!isGenreUnlocked(g)) return;
-    var def = GENRES[g];
-    if (currency >= def.cost) {
-      currency -= def.cost;
+    var price = seasonPrice(g);
+    if (currency >= price) {
+      currency -= price;
       seedInventory[g] = (seedInventory[g]||0) + 1;
       sfxBuy();
       updateShopGrid(); updateHUD(); saveGame();

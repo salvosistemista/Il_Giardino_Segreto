@@ -217,7 +217,7 @@
 
 <div id="topBar">
   <div style="display:flex; flex-direction:column; align-items:flex-start;">
-    <div id="seasonDisplay">🌱 Primavera</div>
+    <div id="seasonDisplay" onclick="onSeasonNameClick()" style="pointer-events:auto; cursor:pointer;">🌱 Primavera</div>
     <div id="seasonBonusReminder" style="font-size:0.68rem; opacity:0; transition:opacity 0.6s; margin-top:6px; max-width:56vw;"></div>
   </div>
   <div id="currencyTopDisplay">Gocce d’Oro: 0</div>
@@ -377,12 +377,12 @@
 
   // ---------- parametri di crescita ----------
   var GENRES = {
-    lavanda:    { name:'Lavanda',    color:'#a58ad0', growTime:60,  cost:1 },
-    tiglio:     { name:'Tiglio',     color:'#d9c94a', growTime:82.5,cost:8 },
-    ciliegio:   { name:'Ciliegio',   color:'#e08aa0', growTime:105, cost:10 },
-    castagno:   { name:'Castagno',   color:'#8a5a2a', growTime:135, cost:12 },
-    brughiera:  { name:'Brughiera',  color:'#7a5a9a', growTime:165, cost:15 },
-    regale:     { name:'Regale',     color:'#c9a227', growTime:210, cost:20 }
+    lavanda:    { name:'Lavanda',    color:'#a58ad0', growTime:60 },
+    tiglio:     { name:'Tiglio',     color:'#d9c94a', growTime:82.5 },
+    ciliegio:   { name:'Ciliegio',   color:'#e08aa0', growTime:105 },
+    castagno:   { name:'Castagno',   color:'#8a5a2a', growTime:135 },
+    brughiera:  { name:'Brughiera',  color:'#7a5a9a', growTime:165 },
+    regale:     { name:'Regale',     color:'#c9a227', growTime:210 }
   };
   var GENRE_KEYS = Object.keys(GENRES);
 
@@ -501,6 +501,17 @@
     { name:'Inverno',   icon:'❄️', tint:'#dce8ec', desc:'Bonus: Crescita +20% per Brughiera e Regale', friendlyMsg:'L\'Inverno aiuta Brughiera e Regale a maturare più in fretta.' }
   ];
   var SEASON_LENGTH = 120000; 
+
+  // Prezzi dei semi: cambiano ad ogni stagione
+  var SEASON_PRICES = {
+    Primavera: { lavanda:2, tiglio:8,  ciliegio:10, castagno:12, brughiera:15, regale:20 },
+    Estate:    { lavanda:1, tiglio:10, ciliegio:12, castagno:20, brughiera:12, regale:18 },
+    Autunno:   { lavanda:1, tiglio:8,  ciliegio:15, castagno:14, brughiera:16, regale:18 },
+    Inverno:   { lavanda:2, tiglio:8,  ciliegio:15, castagno:15, brughiera:18, regale:20 }
+  };
+  function seasonPrice(genreKey) {
+    return SEASON_PRICES[currentSeason().name][genreKey];
+  }
 
   var SAVE_KEY = 'giardinoMiele_save';
   var gameStart, currency, seedInventory, plots, catalog, selectedGenre;
@@ -746,6 +757,21 @@
     return false;
   }
 
+  function showSeasonReminder(s) {
+    var reminder = document.getElementById('seasonBonusReminder');
+    if (!s.friendlyMsg) return;
+    reminder.textContent = s.friendlyMsg;
+    reminder.style.opacity = '1';
+    clearTimeout(seasonReminderTimer);
+    seasonReminderTimer = setTimeout(function() {
+      reminder.style.opacity = '0';
+    }, 30000);
+  }
+
+  window.onSeasonNameClick = function() {
+    showSeasonReminder(currentSeason());
+  };
+
   function updateHUD() {
     var hasteText = "";
     if (Date.now() < growthHasteUntil) {
@@ -759,15 +785,7 @@
 
     if (s.name !== lastSeasonName) {
       lastSeasonName = s.name;
-      var reminder = document.getElementById('seasonBonusReminder');
-      if (s.friendlyMsg) {
-        reminder.textContent = s.friendlyMsg;
-        reminder.style.opacity = '1';
-        clearTimeout(seasonReminderTimer);
-        seasonReminderTimer = setTimeout(function() {
-          reminder.style.opacity = '0';
-        }, 30000);
-      }
+      showSeasonReminder(s);
     }
 
     renderSeedBar();
@@ -1277,7 +1295,7 @@
       id: 'bk_' + Date.now() + '_' + Math.floor(Math.random()*10000),
       genre: book.genre, title: nextRarityDef.prefix + book.title, 
       blurb: FUSING_BLURBS[Math.floor(Math.random() * FUSING_BLURBS.length)],
-      rarity: nextRarity, pages: book.pages + 60, condition: 'Capolavoro Rilegato', harvestedAt: Date.now()
+      rarity: nextRarity, pages: book.pages + 60, condition: 'Miscela Impareggiabile', harvestedAt: Date.now()
     };
     
     catalog.push(upgradedBook);
@@ -1461,7 +1479,7 @@
         infoDiv.appendChild(infoSpan);
 
         var btn = document.createElement('button');
-        btn.textContent = '✧ ' + def.cost;
+        btn.textContent = '✧ ' + seasonPrice(g);
         btn.onclick = function() { buySeed(g); };
 
         row.appendChild(infoDiv);
@@ -1480,16 +1498,18 @@
     GENRE_KEYS.forEach(function(g) {
       var ref = shopRowRefs[g];
       if (!ref) return; // riga bloccata, statica: nulla da aggiornare
+      var price = seasonPrice(g);
       ref.infoSpan.textContent = 'Cresce in ' + ref.def.growTime + 's · In possesso: ' + seedInventory[g];
-      ref.btn.disabled = currency < ref.def.cost;
+      ref.btn.textContent = '✧ ' + price;
+      ref.btn.disabled = currency < price;
     });
   }
   
   window.buySeed = function(g) {
     if(!isGenreUnlocked(g)) return;
-    var def = GENRES[g];
-    if (currency >= def.cost) {
-      currency -= def.cost;
+    var price = seasonPrice(g);
+    if (currency >= price) {
+      currency -= price;
       seedInventory[g] = (seedInventory[g]||0) + 1;
       sfxBuy();
       updateShopGrid(); updateHUD(); saveGame();
