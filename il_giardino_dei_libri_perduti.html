@@ -316,7 +316,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.54</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.55</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -805,7 +805,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.54';
+  var GAME_VERSION = '1.55';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -1510,32 +1510,39 @@
 
   function seasonNarrativeLine(distance, s, planted, harvested, donated) {
     var displayName = seasonDisplayName(s);
+    var hasDonated = donated > 0;
     if (LANG === 'en') {
       var itemWordEn = (harvested === 1) ? 'book' : 'books';
       var donatedWordEn = (donated === 1) ? 'book' : 'books';
-      if (distance === 0) return 'This ' + displayName + ', so far, I\'ve planted ' + planted + ' seeds, harvested ' + harvested + ' ' + itemWordEn + ', and donated ' + donated + ' to the library for restoration.';
-      if (distance === 1) return 'Last ' + displayName + ', I planted ' + planted + ' seeds and harvested... hmm, let me think... ' + harvested + ' ' + itemWordEn + ', donating ' + donated + ' to the library.';
-      if (distance === 2) return 'In ' + displayName + ', if I remember correctly, I had planted ' + planted + ' seeds, harvested ' + harvested + ' ' + itemWordEn + ', and donated ' + donated + ' ' + donatedWordEn + ' to the library.';
-      return 'Last ' + displayName + ' I might have planted ' + planted + ' seeds and harvested ' + harvested + ' ' + itemWordEn + ', perhaps donating ' + donated + ' to the library... but maybe it was just a dream.';
+      if (distance === 0) {
+        return 'This ' + displayName + ', so far, I\'ve planted ' + planted + ' seeds and harvested ' + harvested + ' ' + itemWordEn +
+          (hasDonated ? ', and donated ' + donated + ' to the library for restoration.' : '.');
+      }
+      if (distance === 1) {
+        return 'Last ' + displayName + ', I planted ' + planted + ' seeds and harvested... hmm, let me think... ' + harvested + ' ' + itemWordEn +
+          (hasDonated ? ', donating ' + donated + ' to the library.' : '.');
+      }
+      return 'Last ' + displayName + ' I might have planted ' + planted + ' seeds and harvested ' + harvested + ' ' + itemWordEn +
+        (hasDonated ? ', perhaps donating ' + donated + ' to the library' : '') + '... but maybe it was just a dream.';
     }
     var itemWord = (harvested === 1) ? 'libro' : 'libri';
-    var donatedWord = (donated === 1) ? 'libro' : 'libri';
     if (distance === 0) {
-      return QUESTO_QUESTA[s.name] + ' ' + displayName + ', sino ad oggi, ho piantato ' + planted + ' semi, ho raccolto ' + harvested + ' ' + itemWord + ' e ne ho donati ' + donated + ' alla biblioteca per il restauro.';
+      return QUESTO_QUESTA[s.name] + ' ' + displayName + ', sino ad oggi, ho piantato ' + planted + ' semi e ho raccolto ' + harvested + ' ' + itemWord +
+        (hasDonated ? ' e ne ho donati ' + donated + ' alla biblioteca per il restauro.' : '.');
     } else if (distance === 1) {
-      return LO_SCORSO_LA_SCORSA[s.name] + ' ' + displayName + ', invece, ho piantato ' + planted + ' semi e ho raccolto... mmmh, fammi pensare... ' + harvested + ' ' + itemWord + ', donandone ' + donated + ' alla biblioteca.';
-    } else if (distance === 2) {
-      return 'In ' + displayName + ', se non ricordo male, avevo piantato ' + planted + ' semi, raccolto ' + harvested + ' ' + itemWord + ' e donato ' + donated + ' ' + donatedWord + ' alla biblioteca.';
+      return LO_SCORSO_LA_SCORSA[s.name] + ' ' + displayName + ', invece, ho piantato ' + planted + ' semi e ho raccolto... mmmh, fammi pensare... ' + harvested + ' ' + itemWord +
+        (hasDonated ? ', donandone ' + donated + ' alla biblioteca.' : '.');
     } else {
-      return LO_SCORSO_LA_SCORSA[s.name] + ' ' + displayName + ' potrei aver piantato ' + planted + ' semi e raccolto ' + harvested + ' ' + itemWord + ', donandone forse ' + donated + ' alla biblioteca... ma forse era solo un sogno.';
+      return LO_SCORSO_LA_SCORSA[s.name] + ' ' + displayName + ' potrei aver piantato ' + planted + ' semi e raccolto ' + harvested + ' ' + itemWord +
+        (hasDonated ? ', donandone forse ' + donated + ' alla biblioteca' : '') + '... ma forse era solo un sogno.';
     }
   }
 
   function renderDiaryNarrative() {
     var idx0 = currentSeasonIndex();
-    var totalSeasons = idx0 + 1;
+    var totalSeasons = idx0; // stagioni intere già passate, esclusa quella in corso
     var html = '<p>' + ui('diaryIntro').replace('{n}', totalSeasons) + '</p>';
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < 3; i++) {
       var idx = idx0 - i;
       var s = SEASONS[((idx % 4) + 4) % 4];
       var stats = seasonStats[idx] || { planted: 0, harvested: 0, donated: 0 };
