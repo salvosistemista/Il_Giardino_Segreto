@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Il Giardino del Miele Prezioso</title>
+<title id="pageTitle">Il Giardino del Miele Prezioso</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
   html, body {
@@ -209,6 +209,11 @@
     background: #5a7a3e; border: 1px solid #445533; color: #f5f8ec;
     border-radius: 4px; padding: 4px 8px; font-size: 0.75rem;
   }
+
+  .optRow { display:flex; flex-direction:column; align-items:center; gap:8px; margin: 16px 0; }
+  .optToggle { display:flex; gap:8px; }
+  .optToggle button { background: rgba(255,255,255,0.6); border: 1px solid #8a9a70; color: #445533; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-family: inherit; }
+  .optToggle button.active { background: #5a7a3e; color: #f5f8ec; border-color: #445533; }
 </style>
 </head>
 <body>
@@ -225,45 +230,65 @@
 <div id="toast"></div>
 
 <div id="introOverlay" style="position:fixed; inset:0; z-index:15; display:none; align-items:flex-start; justify-content:center; padding-top:140px; pointer-events:none;">
-  <div style="background:rgba(30,26,15,0.6); color:#fdf6e3; padding:14px 28px; border-radius:12px; font-size:1.15rem; font-style:italic; text-align:center; max-width:80%; letter-spacing:0.3px;">Le api non volano mai da sole...</div>
+  <div id="introPhrase" style="background:rgba(30,26,15,0.6); color:#fdf6e3; padding:14px 28px; border-radius:12px; font-size:1.15rem; font-style:italic; text-align:center; max-width:80%; letter-spacing:0.3px;">Le api non volano mai da sole...</div>
 </div>
 
 <div id="guestBubble" onclick="openOrderOverlay()">🦉</div>
 
 <div id="seedBar"></div>
 <div id="bottomBar">
-  <button class="ctrlBtn" onclick="returnToMenu()">🏠 Menu</button>
-  <button class="ctrlBtn" onclick="openDiary()">📔 Diario</button>
-  <button class="ctrlBtn" onclick="openShop()">🌸 Vivaio</button>
-  <button class="ctrlBtn" onclick="openCatalog()">🍯 Dispensa</button>
+  <button class="ctrlBtn" onclick="returnToMenu()" id="btnMenu">🏠 Menu</button>
+  <button class="ctrlBtn" onclick="openDiary()" id="btnDiary">📔 Diario</button>
+  <button class="ctrlBtn" onclick="openShop()" id="btnShop">🌸 Vivaio</button>
+  <button class="ctrlBtn" onclick="openCatalog()" id="btnCatalog">🍯 Dispensa</button>
 </div>
 
 <div class="overlay" id="startScreen">
-  <h1>IL GIARDINO DEL MIELE PREZIOSO</h1>
-  <p>Un piccolo giardino dove i fiori crescono in attesa delle api. Semina, aspetta, raccogli: ogni fiore maturo profuma di un nuovo vasetto di miele per la tua dispensa. Nessuna fretta, nessuna sconfitta possibile.</p>
+  <h1 id="startTitle">IL GIARDINO DEL MIELE PREZIOSO</h1>
+  <p id="startIntro">Un piccolo giardino dove i fiori crescono in attesa delle api. Semina, aspetta, raccogli: ogni fiore maturo profuma di un nuovo vasetto di miele per la tua dispensa. Nessuna fretta, nessuna sconfitta possibile.</p>
   <button class="btn" id="continueBtn" onclick="continueGame()" style="display:none;">TORNA AL GIARDINO</button>
-  <button class="btn" onclick="startNewGame()">PIANTA IL PRIMO SEME</button>
-  <button class="btn secondary" onclick="openInfo()">COME SI GIOCA</button>
+  <button class="btn" onclick="startNewGame()" id="btnNewGame">PIANTA IL PRIMO SEME</button>
+  <button class="btn secondary" onclick="openInfo()" id="btnHowTo">COME SI GIOCA</button>
+  <button class="btn secondary" onclick="openOptions()" id="btnOptions">⚙️ OPZIONI</button>
 </div>
 
 <div class="overlay hidden" id="confirmNewGameScreen">
-  <h1>Nuova Partita?</h1>
-  <p>Hai già un giardino in corso. Iniziare una nuova partita cancellerà per sempre i progressi attuali: semi, vasetti di miele raccolti e Gocce d'Oro.</p>
-  <button class="btn" onclick="confirmStartNewGame()">SÌ, INIZIA DA CAPO</button>
-  <button class="btn secondary" onclick="cancelStartNewGame()">ANNULLA</button>
+  <h1 id="confirmTitle">Nuova Partita?</h1>
+  <p id="confirmText">Hai già un giardino in corso. Iniziare una nuova partita cancellerà per sempre i progressi attuali: semi, vasetti di miele raccolti e Gocce d'Oro.</p>
+  <button class="btn" onclick="confirmStartNewGame()" id="btnConfirmYes">SÌ, INIZIA DA CAPO</button>
+  <button class="btn secondary" onclick="cancelStartNewGame()" id="btnConfirmNo">ANNULLA</button>
+</div>
+
+<div class="overlay hidden" id="optionsScreen">
+  <h1 id="optionsTitle">OPZIONI</h1>
+  <div class="optRow">
+    <div id="optFontLabel">Dimensione testo</div>
+    <div class="optToggle">
+      <button id="fontNormalBtn" onclick="setFontSize('normal')">Normale</button>
+      <button id="fontLargeBtn" onclick="setFontSize('large')">Grande</button>
+    </div>
+  </div>
+  <div class="optRow">
+    <div id="optLangLabel">Lingua / Language</div>
+    <div class="optToggle">
+      <button id="langItBtn" onclick="setLanguage('it')">Italiano</button>
+      <button id="langEnBtn" onclick="setLanguage('en')">English</button>
+    </div>
+  </div>
+  <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
-  <h1>IL VIVAIO</h1>
+  <h1 id="shopTitle">IL VIVAIO</h1>
   <div id="currencyDisplay">🍯 0 Gocce d’Oro</div>
-  <p>Scambia le Gocce d'Oro raccolte con semi di fiori rari.</p>
+  <p id="shopDesc">Scambia le Gocce d'Oro raccolte con semi di fiori rari.</p>
   <div id="shopGrid"></div>
-  <button class="btn secondary" onclick="closeShop()">TORNA AL GIARDINO</button>
+  <button class="btn secondary" onclick="closeShop()" id="btnShopClose">TORNA AL GIARDINO</button>
 </div>
 
 <!-- LIBRERIA DEI RICORDI -->
 <div class="overlay hidden" id="catalogScreen">
-  <h1>LA DOLCE DISPENSA</h1>
+  <h1 id="catalogTitle">LA DOLCE DISPENSA</h1>
   <p id="catalogEmpty" style="display:none;">Non hai ancora raccolto nessun vasetto di miele.</p>
   
   <!-- Contenitore Filtri sempre visibile -->
@@ -274,14 +299,14 @@
       <button class="filterBtn" id="f-rarity" onclick="setSort('rarity')">Per Rarità</button>
     </div>
     <div class="filter-selects">
-      <select id="sel-genre" onchange="renderCatalog()"><option value="all">Tutti i Gusti</option></select>
-      <select id="sel-rarity" onchange="renderCatalog()"><option value="all">Tutte le Rarità</option></select>
-      <select id="sel-condition" onchange="renderCatalog()"><option value="all">Tutte le Condizioni</option></select>
+      <select id="sel-genre" onchange="renderCatalog()"><option value="all" id="optAllGenres">Tutti i Gusti</option></select>
+      <select id="sel-rarity" onchange="renderCatalog()"><option value="all" id="optAllRarities">Tutte le Rarità</option></select>
+      <select id="sel-condition" onchange="renderCatalog()"><option value="all" id="optAllConditions">Tutte le Condizioni</option></select>
     </div>
   </div>
 
   <div id="bookshelfContainer"></div>
-  <button class="btn secondary" onclick="closeCatalog()">TORNA AL GIARDINO</button>
+  <button class="btn secondary" onclick="closeCatalog()" id="btnCatalogClose">TORNA AL GIARDINO</button>
 </div>
 
 <div class="overlay hidden" id="bookRevealScreen">
@@ -292,7 +317,7 @@
   <div id="bookPassiveGains"></div>
   <p id="bookRevealText"></p>
   <button class="btn craft hidden" id="craftBtn" onclick="triggerFusing()">UNISCI 3 VASETTI UGUALI</button>
-  <button class="btn" onclick="closeBookReveal()">RIPONI IN DISPENSA</button>
+  <button class="btn" onclick="closeBookReveal()" id="btnPutBack">RIPONI IN DISPENSA</button>
 </div>
 
 <div class="overlay hidden" id="orderScreen">
@@ -301,12 +326,12 @@
   <p id="orderGuestText">L'Orsetto Goloso cerca un vasetto di miele...</p>
   <div id="matchingBooksList"></div>
   <p id="orderNoBooks" style="font-size:0.8rem; color:#b06060; display:none;">Non hai vasetti di miele nella dispensa che soddisfano questa richiesta.</p>
-  <button class="btn secondary" onclick="closeOrderOverlay()">FORSE PIÙ TARDI</button>
+  <button class="btn secondary" onclick="closeOrderOverlay()" id="btnMaybeLater">FORSE PIÙ TARDI</button>
 </div>
 
 <div class="overlay hidden" id="infoScreen">
-  <h1>COME SI GIOCA</h1>
-  <div style="max-width:440px; text-align:left; font-size:0.85rem; line-height:1.6; color:#4f5c3c;">
+  <h1 id="infoTitle">COME SI GIOCA</h1>
+  <div style="max-width:440px; text-align:left; font-size:0.85rem; line-height:1.6; color:#4f5c3c;" id="infoBody">
     <p><b>🌱 Semina e raccolta.</b> Scegli un seme dalla barra in basso e tocca un lotto libero per piantarlo. Ogni gusto ha un tempo di crescita diverso: quando il fiore è maturo, toccalo per raccogliere un nuovo vasetto di miele per la tua dispensa.</p>
     <p><b>🍯 Rarità e fusione.</b> I vasetti raccolti sono di rarità Fresco. Trovando 3 copie identiche (stesso titolo, gusto, rarità e condizione) puoi unirle in un unico vasetto di rarità superiore, spendendo Gocce d'Oro.</p>
     <p><b>🔒 Sblocchi.</b> I gusti Brughiera e Regale si sbloccano ottenendo rispettivamente un vasetto di rarità Ambrato e Dorato. Una volta sbloccati restano tali per sempre.</p>
@@ -314,28 +339,30 @@
     <p><b>🐻 Ospiti.</b> Un orsetto bussa al giardino e resta 1 minuto chiedendo un vasetto di un gusto specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni orsetto parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un vasetto di rarità superiore) in cambio di una ricompensa molto più generosa.</p>
     <p><b>🌧️ Eventi atmosferici.</b> Pioggia e sciami dorati capitano a sorpresa: la pioggia accelera subito i fiori, mentre lo sciame dorato apre una breve finestra da toccare per un bonus di Gocce d'Oro.</p>
     <p><b>🍯 Dispensa.</b> Qui puoi sfogliare tutti i vasetti raccolti, ordinarli e filtrarli per gusto, rarità o condizione.</p>
-    <p><b>📔 Diario.</b> Racconta quanti semi hai piantato e quanti vasetti hai raccolto nelle ultime 4 stagioni, e mostra gli orsetti che hai conosciuto.</p>
+    <p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 8 stagioni (circa 2 anni) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>
+    <p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti vasetti hai raccolto e quanti ne hai donati ai vicini nelle ultime 4 stagioni, e mostra gli orsetti che hai conosciuto con l'ultimo messaggio di gratitudine che ti hanno lasciato.</p>
   </div>
-  <button class="btn secondary" onclick="closeInfo()">HO CAPITO</button>
+  <button class="btn secondary" onclick="closeInfo()" id="btnGotIt">HO CAPITO</button>
 </div>
 
 <div class="overlay hidden" id="diaryScreen">
-  <h1>DIARIO</h1>
+  <h1 id="diaryTitle">DIARIO</h1>
   <div id="diaryNarrative" style="max-width:440px; text-align:left; font-size:0.85rem; line-height:1.75; color:#4f5c3c;"></div>
   <div id="diaryGuestsSection" style="display:none; margin-top:20px; width:100%; max-width:440px;">
-    <h3 style="font-size:0.95rem; margin-bottom:10px; color:#566b3a; text-align:center;">Orsetti conosciuti</h3>
+    <h3 id="diaryKnownGuests" style="font-size:0.95rem; margin-bottom:10px; color:#566b3a; text-align:center;">Orsetti conosciuti</h3>
     <div style="display:flex; align-items:center; justify-content:center; gap:14px;">
       <button id="diaryPrevBtn" class="ctrlBtn" onclick="diaryShift(-1)" style="display:none;">◀</button>
       <div id="diaryGuestCard" style="display:flex; flex-direction:column; align-items:center; gap:2px; min-width:110px;"></div>
       <button id="diaryNextBtn" class="ctrlBtn" onclick="diaryShift(1)" style="display:none;">▶</button>
     </div>
   </div>
-  <button class="btn secondary" onclick="closeDiary()" style="margin-top:22px;">CHIUDI</button>
+  <button class="btn secondary" onclick="closeDiary()" id="btnDiaryClose" style="margin-top:22px;">CHIUDI</button>
 </div>
 
 <script>
 (function() {
   'use strict';
+
 
   var canvas = document.getElementById('gameCanvas');
   var ctx = canvas.getContext('2d');
@@ -377,32 +404,52 @@
 
   // ---------- parametri di crescita ----------
   var GENRES = {
-    lavanda:    { name:'Lavanda',    color:'#a58ad0', growTime:60 },
-    tiglio:     { name:'Tiglio',     color:'#d9c94a', growTime:82.5 },
-    ciliegio:   { name:'Ciliegio',   color:'#e08aa0', growTime:105 },
-    castagno:   { name:'Castagno',   color:'#8a5a2a', growTime:135 },
-    brughiera:  { name:'Brughiera',  color:'#7a5a9a', growTime:165 },
-    regale:     { name:'Regale',     color:'#c9a227', growTime:210 }
+    lavanda:    { name:'Lavanda',    nameEn:'Lavender',       color:'#a58ad0', growTime:60 },
+    tiglio:     { name:'Tiglio',     nameEn:'Linden',         color:'#d9c94a', growTime:82.5 },
+    ciliegio:   { name:'Ciliegio',   nameEn:'Cherry Blossom', color:'#e08aa0', growTime:105 },
+    castagno:   { name:'Castagno',   nameEn:'Chestnut',       color:'#8a5a2a', growTime:135 },
+    brughiera:  { name:'Brughiera',  nameEn:'Heather',        color:'#7a5a9a', growTime:165 },
+    regale:     { name:'Regale',     nameEn:'Royal',          color:'#c9a227', growTime:210 }
   };
   var GENRE_KEYS = Object.keys(GENRES);
+  function genreName(key) { return LANG === 'en' ? GENRES[key].nameEn : GENRES[key].name; }
 
   var RARITIES = [
-    { name: 'Fresco', color: '#6a9950', cost: 0, income: 0, prefix: '' },
-    { name: 'Ambrato', color: '#c98a30', cost: 50, income: 0.01, prefix: 'Riserva Ambrata di ' },
-    { name: 'Dorato', color: '#e0b020', cost: 100, income: 0.05, prefix: 'Nettare Dorato di ' },
-    { name: 'Leggendario', color: '#8a2a7a', cost: 200, income: 0.1, prefix: 'Essenza Leggendaria di ' }
+    { name: 'Fresco', nameEn: 'Fresh', color: '#6a9950', cost: 0, income: 0, prefix: '', prefixEn: '' },
+    { name: 'Ambrato', nameEn: 'Amber', color: '#c98a30', cost: 50, income: 0.01, prefix: 'Riserva Ambrata di ', prefixEn: 'Amber Reserve of ' },
+    { name: 'Dorato', nameEn: 'Golden', color: '#e0b020', cost: 100, income: 0.05, prefix: 'Nettare Dorato di ', prefixEn: 'Golden Nectar of ' },
+    { name: 'Leggendario', nameEn: 'Legendary', color: '#8a2a7a', cost: 200, income: 0.1, prefix: 'Essenza Leggendaria di ', prefixEn: 'Legendary Essence of ' }
   ];
+  function rarityName(idx) { return LANG === 'en' ? RARITIES[idx].nameEn : RARITIES[idx].name; }
+  function rarityPrefix(idx) { return LANG === 'en' ? RARITIES[idx].prefixEn : RARITIES[idx].prefix; }
 
-  var BOOK_CONDITIONS = ['Appena raccolto', 'Vasetto colmo', 'Leggermente cristallizzato', 'Profuma di fiori freschi', 'Sigillato a mano', 'Raccolto al chiaro di luna'];
+  var BOOK_CONDITIONS = {
+    it: ['Appena raccolto', 'Vasetto colmo', 'Leggermente cristallizzato', 'Profuma di fiori freschi', 'Sigillato a mano', 'Raccolto al chiaro di luna'],
+    en: ['Freshly harvested', 'Jar filled to the brim', 'Slightly crystallized', 'Smells of fresh flowers', 'Hand-sealed', 'Harvested by moonlight']
+  };
 
   var GUEST_POOL = [
-    { name: "L'Orsetto Goloso", icon: "🐻", dialogue: "Il mio pancino brontola dalla voglia... avresti un vasetto di miele di **Ciliegio** da condividere con me?" },
-    { name: "L'Orsa Premurosa", icon: "🐻", dialogue: "Oggi mi sento un po' stanca... un vasetto di miele di **Tiglio** mi scalderebbe il cuore. Ne avresti uno?" },
-    { name: "L'Orso Esploratore", icon: "🐻", dialogue: "Ho girato tutto il bosco in lungo e in largo... mi farebbe comodo un vasetto di miele di **Castagno** per rifarmi le forze." },
-    { name: "L'Orsetta Sognatrice", icon: "🐻", dialogue: "Il giardino profuma di sogni oggi... hai per caso un vasetto di miele di **Lavanda** da regalarmi?" },
-    { name: "L'Orso Nottambulo", icon: "🐻", dialogue: "Le notti in tana sono lunghe e silenziose... avresti un vasetto di miele di **Brughiera** per addolcirle?" },
-    { name: "Il Vecchio Orso Saggio", icon: "🐻", dialogue: "Ho visto passare molte stagioni... un vasetto di miele **Regale** sarebbe un dono degno della mia età. Ne avresti uno?" }
+    { name: "L'Orsetto Goloso", nameEn: "The Greedy Little Bear", icon: "🐻",
+      dialogue: "Il mio pancino brontola dalla voglia... avresti un vasetto di miele di **Ciliegio** da condividere con me?",
+      dialogueEn: "My tummy is growling with hunger... would you have a jar of **Cherry Blossom** honey to share with me?" },
+    { name: "L'Orsa Premurosa", nameEn: "The Caring Bear", icon: "🐻",
+      dialogue: "Oggi mi sento un po' stanca... un vasetto di miele di **Tiglio** mi scalderebbe il cuore. Ne avresti uno?",
+      dialogueEn: "I'm feeling a bit tired today... a jar of **Linden** honey would warm my heart. Would you have one?" },
+    { name: "L'Orso Esploratore", nameEn: "The Explorer Bear", icon: "🐻",
+      dialogue: "Ho girato tutto il bosco in lungo e in largo... mi farebbe comodo un vasetto di miele di **Castagno** per rifarmi le forze.",
+      dialogueEn: "I've wandered the whole forest, far and wide... a jar of **Chestnut** honey would help me regain my strength." },
+    { name: "L'Orsetta Sognatrice", nameEn: "The Dreamy Little Bear", icon: "🐻",
+      dialogue: "Il giardino profuma di sogni oggi... hai per caso un vasetto di miele di **Lavanda** da regalarmi?",
+      dialogueEn: "The garden smells of dreams today... would you happen to have a jar of **Lavender** honey to give me?" },
+    { name: "L'Orso Nottambulo", nameEn: "The Night Owl Bear", icon: "🐻",
+      dialogue: "Le notti in tana sono lunghe e silenziose... avresti un vasetto di miele di **Brughiera** per addolcirle?",
+      dialogueEn: "Nights in the den are long and quiet... would you have a jar of **Heather** honey to sweeten them?" },
+    { name: "Il Vecchio Orso Saggio", nameEn: "The Wise Old Bear", icon: "🐻",
+      dialogue: "Ho visto passare molte stagioni... un vasetto di miele **Regale** sarebbe un dono degno della mia età. Ne avresti uno?",
+      dialogueEn: "I've seen many seasons pass... a jar of **Royal** honey would be a gift worthy of my age. Would you have one?" }
   ];
+  function guestDisplayName(g) { return LANG === 'en' ? g.nameEn : g.name; }
+  function guestDialogue(g) { return LANG === 'en' ? g.dialogueEn : g.dialogue; }
 
   var GUEST_REQ_MAP = {
     "L'Orsetto Goloso": "ciliegio",
@@ -474,32 +521,58 @@
   }
 
   var TITLE_WORDS = {
-    lavanda: { pre: ['Nettare', 'Goccia', 'Essenza', 'Rugiada'], noun: ['di Lavanda al Tramonto', 'dei Campi Viola', 'di un Mattino Profumato', 'della Brezza Estiva'] },
-    tiglio: { pre: ['Infuso', 'Miele', 'Dolcezza', 'Carezza'], noun: ['di Tiglio in Fiore', 'delle Sere Quiete', 'di un Abbraccio Caldo', 'del Viale Alberato'] },
-    ciliegio: { pre: ['Sciroppo', 'Bacio', 'Rosa', 'Dolcezza'], noun: ['di Fiori di Ciliegio', 'di Primavera Rosa', 'colto tra i Petali', 'di un Pomeriggio Rosato'] },
-    castagno: { pre: ['Ambra', 'Cuore', 'Forza', 'Radice'], noun: ['di Bosco Antico', 'del Sottobosco', 'dalle Chiome Robuste', 'di Terra e Legno'] },
-    brughiera: { pre: ['Ombra', 'Velo', 'Sussurro', 'Mistero'], noun: ['della Brughiera Silente', 'colto a Mezzanotte', 'tra i Rovi Selvatici', 'sotto la Luna Piena'] },
-    regale: { pre: ['Corona', 'Trono', 'Scettro', 'Diadema'], noun: ['delle Api Regine', 'del Favo Sacro', 'di un Alveare Antico', 'della Regina Madre'] }
+    it: {
+      lavanda: { pre: ['Nettare', 'Goccia', 'Essenza', 'Rugiada'], noun: ['di Lavanda al Tramonto', 'dei Campi Viola', 'di un Mattino Profumato', 'della Brezza Estiva'] },
+      tiglio: { pre: ['Infuso', 'Miele', 'Dolcezza', 'Carezza'], noun: ['di Tiglio in Fiore', 'delle Sere Quiete', 'di un Abbraccio Caldo', 'del Viale Alberato'] },
+      ciliegio: { pre: ['Sciroppo', 'Bacio', 'Rosa', 'Dolcezza'], noun: ['di Fiori di Ciliegio', 'di Primavera Rosa', 'colto tra i Petali', 'di un Pomeriggio Rosato'] },
+      castagno: { pre: ['Ambra', 'Cuore', 'Forza', 'Radice'], noun: ['di Bosco Antico', 'del Sottobosco', 'dalle Chiome Robuste', 'di Terra e Legno'] },
+      brughiera: { pre: ['Ombra', 'Velo', 'Sussurro', 'Mistero'], noun: ['della Brughiera Silente', 'colto a Mezzanotte', 'tra i Rovi Selvatici', 'sotto la Luna Piena'] },
+      regale: { pre: ['Corona', 'Trono', 'Scettro', 'Diadema'], noun: ['delle Api Regine', 'del Favo Sacro', 'di un Alveare Antico', 'della Regina Madre'] }
+    },
+    en: {
+      lavanda: { pre: ['Nectar', 'Drop', 'Essence', 'Dew'], noun: ['of Lavender at Sunset', 'from the Violet Fields', 'of a Fragrant Morning', 'of the Summer Breeze'] },
+      tiglio: { pre: ['Infusion', 'Honey', 'Sweetness', 'Caress'], noun: ['of Blooming Linden', 'of Quiet Evenings', 'of a Warm Embrace', 'from the Tree-Lined Avenue'] },
+      ciliegio: { pre: ['Syrup', 'Kiss', 'Rose', 'Sweetness'], noun: ['of Cherry Blossoms', 'of Pink Spring', 'Picked Among the Petals', 'of a Rosy Afternoon'] },
+      castagno: { pre: ['Amber', 'Heart', 'Strength', 'Root'], noun: ['of the Ancient Forest', 'of the Undergrowth', 'from Sturdy Branches', 'of Earth and Wood'] },
+      brughiera: { pre: ['Shadow', 'Veil', 'Whisper', 'Mystery'], noun: ['of the Silent Moor', 'Picked at Midnight', 'Among the Wild Brambles', 'Under the Full Moon'] },
+      regale: { pre: ['Crown', 'Throne', 'Scepter', 'Diadem'], noun: ['of the Queen Bees', 'of the Sacred Comb', 'from an Ancient Hive', 'of the Mother Queen'] }
+    }
   };
 
   var BLURBS = {
-    lavanda: ['Un profumo che calma anche i pensieri più agitati.', 'Denso al punto giusto, dolce senza esagerare.'],
-    tiglio: ['Ricorda le sere d\'estate sotto gli alberi in fiore.', 'Un cucchiaino basta per sentirsi a casa.'],
-    ciliegio: ['Un rosa pallido che sa di primavera.', 'Delicato, quasi timido nel suo sapore.'],
-    castagno: ['Un gusto deciso, quasi legnoso.', 'Non è per tutti, ma chi lo ama non torna indietro.'],
-    brughiera: ['Scuro e intenso, con un retrogusto misterioso.', 'Cristallizza in fretta, come se avesse fretta di raccontarsi.'],
-    regale: ['Riservato a pochi vasetti per stagione.', 'Un miele che sembra fatto apposta per occasioni importanti.']
+    it: {
+      lavanda: ['Un profumo che calma anche i pensieri più agitati.', 'Denso al punto giusto, dolce senza esagerare.'],
+      tiglio: ['Ricorda le sere d\'estate sotto gli alberi in fiore.', 'Un cucchiaino basta per sentirsi a casa.'],
+      ciliegio: ['Un rosa pallido che sa di primavera.', 'Delicato, quasi timido nel suo sapore.'],
+      castagno: ['Un gusto deciso, quasi legnoso.', 'Non è per tutti, ma chi lo ama non torna indietro.'],
+      brughiera: ['Scuro e intenso, con un retrogusto misterioso.', 'Cristallizza in fretta, come se avesse fretta di raccontarsi.'],
+      regale: ['Riservato a pochi vasetti per stagione.', 'Un miele che sembra fatto apposta per occasioni importanti.']
+    },
+    en: {
+      lavanda: ['A scent that calms even the most restless thoughts.', 'Dense just right, sweet without overdoing it.'],
+      tiglio: ['Brings back summer evenings under blooming trees.', 'One spoonful is enough to feel at home.'],
+      ciliegio: ['A pale pink that tastes like spring.', 'Delicate, almost shy in its flavor.'],
+      castagno: ['A bold, almost woody flavor.', 'Not for everyone, but those who love it never go back.'],
+      brughiera: ['Dark and intense, with a mysterious aftertaste.', 'Crystallizes quickly, as if in a hurry to tell its story.'],
+      regale: ['Reserved for just a few jars per season.', 'A honey that seems made for special occasions.']
+    }
   };
 
-  var FUSING_BLURBS = ['Un vasetto denso che racchiude l\'unione di più raccolti.', 'Il miele di questa fusione brilla di riflessi dorati.'];
+  var FUSING_BLURBS = {
+    it: ['Un vasetto denso che racchiude l\'unione di più raccolti.', 'Il miele di questa fusione brilla di riflessi dorati.'],
+    en: ['A dense jar holding the fusion of several harvests.', 'The honey from this fusion gleams with golden light.']
+  };
 
   // ---------- stagioni ----------
   var SEASONS = [
-    { name:'Primavera', icon:'🌱', tint:'#e8ecd8', desc:'Bonus: Crescita +20% per Lavanda e Tiglio', friendlyMsg:'La Primavera fa sbocciare Lavanda e Tiglio un po\' più in fretta.' },
-    { name:'Estate',    icon:'☀️', tint:'#f0e8c8', desc:'Bonus: Crescita +20% per Castagno e Ciliegio', friendlyMsg:'L\'Estate dà una spinta in più a Castagno e Ciliegio.' },
-    { name:'Autunno',   icon:'🍂', tint:'#ecd8c0', desc:'Bonus: +25% Gocce d\'Oro dai raccolti', friendlyMsg:'L\'Autunno regala qualche Goccia d\'Oro in più ad ogni raccolto.' },
-    { name:'Inverno',   icon:'❄️', tint:'#dce8ec', desc:'Bonus: Crescita +20% per Brughiera e Regale', friendlyMsg:'L\'Inverno aiuta Brughiera e Regale a maturare più in fretta.' }
+    { name:'Primavera', nameEn:'Spring', icon:'🌱', tint:'#e8ecd8', desc:'Bonus: Crescita +20% per Lavanda e Tiglio', descEn:'Bonus: +20% Growth for Lavender and Linden', friendlyMsg:'La Primavera fa sbocciare Lavanda e Tiglio un po\' più in fretta.', friendlyMsgEn:'Spring makes Lavender and Linden bloom a little faster.' },
+    { name:'Estate',    nameEn:'Summer', icon:'☀️', tint:'#f0e8c8', desc:'Bonus: Crescita +20% per Castagno e Ciliegio', descEn:'Bonus: +20% Growth for Chestnut and Cherry Blossom', friendlyMsg:'L\'Estate dà una spinta in più a Castagno e Ciliegio.', friendlyMsgEn:'Summer gives an extra boost to Chestnut and Cherry Blossom.' },
+    { name:'Autunno',   nameEn:'Autumn', icon:'🍂', tint:'#ecd8c0', desc:'Bonus: +25% Gocce d\'Oro dai raccolti', descEn:'Bonus: +25% Golden Drops from harvests', friendlyMsg:'L\'Autunno regala qualche Goccia d\'Oro in più ad ogni raccolto.', friendlyMsgEn:'Autumn grants a little extra Golden Drops with every harvest.' },
+    { name:'Inverno',   nameEn:'Winter', icon:'❄️', tint:'#dce8ec', desc:'Bonus: Crescita +20% per Brughiera e Regale', descEn:'Bonus: +20% Growth for Heather and Royal', friendlyMsg:'L\'Inverno aiuta Brughiera e Regale a maturare più in fretta.', friendlyMsgEn:'Winter helps Heather and Royal mature a little faster.' }
   ];
+  function seasonDisplayName(s) { return LANG === 'en' ? s.nameEn : s.name; }
+  function seasonDescText(s) { return LANG === 'en' ? s.descEn : s.desc; }
+  function seasonFriendlyMsg(s) { return LANG === 'en' ? s.friendlyMsgEn : s.friendlyMsg; }
   var SEASON_LENGTH = 120000; 
 
   // Prezzi dei semi: cambiano ad ogni stagione
@@ -514,6 +587,276 @@
   }
 
   var SAVE_KEY = 'giardinoMiele_save';
+
+  // ---------- Lingua e dimensione testo (impostazioni globali, non legate al salvataggio di partita) ----------
+  var LANG = 'it';
+  try { LANG = localStorage.getItem('gardenLang') || 'it'; } catch(e) {}
+  var FONT_SIZE = 'normal';
+  try { FONT_SIZE = localStorage.getItem('gardenFontSize') || 'normal'; } catch(e) {}
+
+  var UI_STRINGS = {
+    it: {
+      pageTitle: 'Il Giardino del Miele Prezioso',
+      startTitle: 'IL GIARDINO DEL MIELE PREZIOSO',
+      startIntro: 'Un piccolo giardino dove i fiori crescono in attesa delle api. Semina, aspetta, raccogli: ogni fiore maturo profuma di un nuovo vasetto di miele per la tua dispensa. Nessuna fretta, nessuna sconfitta possibile.',
+      continueBtn: 'TORNA AL GIARDINO',
+      btnNewGame: 'PIANTA IL PRIMO SEME',
+      btnHowTo: 'COME SI GIOCA',
+      btnOptions: '⚙️ OPZIONI',
+      confirmTitle: 'Nuova Partita?',
+      confirmText: "Hai già un giardino in corso. Iniziare una nuova partita cancellerà per sempre i progressi attuali: semi, vasetti di miele raccolti e Gocce d'Oro.",
+      btnConfirmYes: 'SÌ, INIZIA DA CAPO',
+      btnConfirmNo: 'ANNULLA',
+      optionsTitle: 'OPZIONI',
+      optFontLabel: 'Dimensione testo',
+      fontNormalBtn: 'Normale',
+      fontLargeBtn: 'Grande',
+      optLangLabel: 'Lingua / Language',
+      langItBtn: 'Italiano',
+      langEnBtn: 'English',
+      btnOptionsClose: 'CHIUDI',
+      btnMenu: '🏠 Menu',
+      btnDiary: '📔 Diario',
+      btnShop: '🌸 Vivaio',
+      btnCatalog: '🍯 Dispensa',
+      shopTitle: 'IL VIVAIO',
+      shopDesc: "Scambia le Gocce d'Oro raccolte con semi di fiori rari.",
+      catalogTitle: 'LA DOLCE DISPENSA',
+      catalogEmpty: 'Non hai ancora raccolto nessun vasetto di miele.',
+      sortRecent: 'Recenti',
+      sortGenre: 'Per Gusto',
+      sortRarity: 'Per Rarità',
+      optAllGenres: 'Tutti i Gusti',
+      optAllRarities: 'Tutte le Rarità',
+      optAllConditions: 'Tutte le Condizioni',
+      btnPutBack: 'RIPONI IN DISPENSA',
+      orderDefaultTitle: 'Un Orsetto in Visita',
+      orderDefaultText: "L'Orsetto Goloso cerca un vasetto di miele...",
+      orderNoBooks: 'Non hai vasetti di miele nella dispensa che soddisfano questa richiesta.',
+      btnMaybeLater: 'FORSE PIÙ TARDI',
+      infoTitle: 'COME SI GIOCA',
+      btnGotIt: 'HO CAPITO',
+      diaryTitle: 'DIARIO',
+      diaryKnownGuests: 'Orsetti conosciuti',
+      btnDiaryClose: 'CHIUDI',
+      introPhrase: 'Le api non volano mai da sole...',
+      currencyName: "Gocce d'Oro",
+      noMatchFilters: 'Nessun vasetto corrisponde ai filtri selezionati.',
+      lockedBtn: 'Bloccato',
+      reqAncient: "Richiede un vasetto 'Ambrato'",
+      reqRare: "Richiede un vasetto 'Dorato'",
+      growsIn: 'Cresce in {n}s',
+      inStock: 'In possesso',
+      weatherRain: '🌧️ Una Pioggia Benefica bagna il giardino! Piante accelerate.',
+      weatherWind: 'Uno Sciame Dorato 🐝 attraversa il giardino. Clicca la scia dorata!',
+      weatherClear: 'Il cielo torna sereno nel giardino.',
+      windCaught: "✨ Afferrato! Guadagnate +{n} Gocce d'Oro!",
+      guestArrivedSuffix: ' è arrivato! Resterà per 1 minuto.',
+      guestLeftTimeout: ' ha atteso troppo ed è andato via...',
+      guestLeftNoMatch: " se n'è andato in cerca di qualcun altro...",
+      tierUpSuffix: ' ora ti considera un ',
+      giftSeed: '🎁 {name} ti lascia in dono un seme di {genre}!',
+      giftCurrency: "🎁 {name} ti lascia in dono +{n} Gocce d'Oro!",
+      speedDoubled: 'Velocità raddoppiata per {n} sec.',
+      speedTripled: 'Velocità triplicata per 90 sec.',
+      specialRequestText: "Questa volta ho una richiesta speciale: mi servirebbe un vasetto di <b>{genre}</b> di rarità superiore a Fresco. Saprò ricompensare generosamente chi mi aiuta!",
+      decayDonated1: '1 vasetto è stato donato ai vicini di casa.',
+      decayDonatedN: '{n} vasetti sono stati donati ai vicini di casa.',
+      seedMissing: 'Non hai semi di {genre}.',
+      seedMissingShop: 'Non hai semi di {genre}. Visita il Vivaio.',
+      growthRemaining: '{genre}: ancora {n}s di crescita.',
+      offlineProgress: '🕐 Mentre eri via sono passati {n} min: crescita e rendita aggiornate.',
+      craftBtnText: 'UNISCI 3 VASETTI ({n}/3) • Costo: {cost}',
+      pagesWord: 'g',
+      passiveGains: '🍯 Genera passivamente: +{income} gocce/s',
+      boundMasterpiece: 'Miscela Impareggiabile',
+      hasteSuffix: ' ⚡ (Crescita x{mult}: {n}s)',
+      deliverBtn: 'Consegna',
+      infoBodyHtml:
+        '<p><b>🌱 Semina e raccolta.</b> Scegli un seme dalla barra in basso e tocca un lotto libero per piantarlo. Ogni gusto ha un tempo di crescita diverso: quando il fiore è maturo, toccalo per raccogliere un nuovo vasetto di miele per la tua dispensa.</p>' +
+        '<p><b>🍯 Rarità e fusione.</b> I vasetti raccolti sono di rarità Fresco. Trovando 3 copie identiche (stesso titolo, gusto, rarità e condizione) puoi unirle in un unico vasetto di rarità superiore, spendendo Gocce d\'Oro.</p>' +
+        '<p><b>🔒 Sblocchi.</b> I gusti Brughiera e Regale si sbloccano ottenendo rispettivamente un vasetto di rarità Ambrato e Dorato. Una volta sbloccati restano tali per sempre.</p>' +
+        '<p><b>🍂 Stagioni.</b> Il tempo scorre in cicli di Primavera, Estate, Autunno e Inverno, ognuna con un bonus diverso su crescita o guadagni.</p>' +
+        '<p><b>🐻 Ospiti.</b> Un orsetto bussa al giardino e resta 1 minuto chiedendo un vasetto di un gusto specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni orsetto parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un vasetto di rarità superiore) in cambio di una ricompensa molto più generosa.</p>' +
+        '<p><b>🌧️ Eventi atmosferici.</b> Pioggia e sciami dorati capitano a sorpresa: la pioggia accelera subito i fiori, mentre lo sciame dorato apre una breve finestra da toccare per un bonus di Gocce d\'Oro.</p>' +
+        '<p><b>🍯 Dispensa.</b> Qui puoi sfogliare tutti i vasetti raccolti, ordinarli e filtrarli per gusto, rarità o condizione.</p>' +
+        '<p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 8 stagioni (circa 2 anni) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>' +
+        '<p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti vasetti hai raccolto e quanti ne hai donati ai vicini nelle ultime 4 stagioni, e mostra gli orsetti che hai conosciuto con l\'ultimo messaggio di gratitudine che ti hanno lasciato.</p>'
+    },
+    en: {
+      pageTitle: 'The Garden of Precious Honey',
+      startTitle: 'THE GARDEN OF PRECIOUS HONEY',
+      startIntro: "A small garden where flowers grow, waiting for the bees. Sow, wait, harvest: every blooming flower yields a new jar of honey for your pantry. No rush, no way to lose.",
+      continueBtn: 'BACK TO THE GARDEN',
+      btnNewGame: 'PLANT THE FIRST SEED',
+      btnHowTo: 'HOW TO PLAY',
+      btnOptions: '⚙️ OPTIONS',
+      confirmTitle: 'New Game?',
+      confirmText: 'You already have a garden in progress. Starting a new game will permanently erase your current progress: seeds, harvested honey jars and Golden Drops.',
+      btnConfirmYes: 'YES, START OVER',
+      btnConfirmNo: 'CANCEL',
+      optionsTitle: 'OPTIONS',
+      optFontLabel: 'Text size',
+      fontNormalBtn: 'Normal',
+      fontLargeBtn: 'Large',
+      optLangLabel: 'Lingua / Language',
+      langItBtn: 'Italiano',
+      langEnBtn: 'English',
+      btnOptionsClose: 'CLOSE',
+      btnMenu: '🏠 Menu',
+      btnDiary: '📔 Diary',
+      btnShop: '🌸 Nursery',
+      btnCatalog: '🍯 Pantry',
+      shopTitle: 'THE NURSERY',
+      shopDesc: "Trade the Golden Drops you've collected for seeds of rare flowers.",
+      catalogTitle: 'THE SWEET PANTRY',
+      catalogEmpty: "You haven't collected any honey jars yet.",
+      sortRecent: 'Recent',
+      sortGenre: 'By Flavor',
+      sortRarity: 'By Rarity',
+      optAllGenres: 'All Flavors',
+      optAllRarities: 'All Rarities',
+      optAllConditions: 'All Conditions',
+      btnPutBack: 'PUT BACK IN THE PANTRY',
+      orderDefaultTitle: 'A Little Bear Visiting',
+      orderDefaultText: 'The Greedy Little Bear is looking for a jar of honey...',
+      orderNoBooks: 'You have no honey jars in your pantry that satisfy this request.',
+      btnMaybeLater: 'MAYBE LATER',
+      infoTitle: 'HOW TO PLAY',
+      btnGotIt: 'GOT IT',
+      diaryTitle: 'DIARY',
+      diaryKnownGuests: "Bears you've met",
+      btnDiaryClose: 'CLOSE',
+      introPhrase: 'Bees never fly alone...',
+      currencyName: 'Golden Drops',
+      noMatchFilters: 'No jar matches the selected filters.',
+      lockedBtn: 'Locked',
+      reqAncient: "Requires an 'Amber' jar",
+      reqRare: "Requires a 'Golden' jar",
+      growsIn: 'Grows in {n}s',
+      inStock: 'In stock',
+      weatherRain: '🌧️ A Blessed Rain waters the garden! Flowers are speeding up.',
+      weatherWind: 'A Golden Swarm 🐝 sweeps through the garden. Click the golden trail!',
+      weatherClear: 'The sky clears over the garden.',
+      windCaught: '✨ Caught it! You earned +{n} Golden Drops!',
+      guestArrivedSuffix: ' has arrived! They will stay for 1 minute.',
+      guestLeftTimeout: ' waited too long and left...',
+      guestLeftNoMatch: ' left to look for someone else...',
+      tierUpSuffix: ' now considers you a ',
+      giftSeed: '🎁 {name} leaves you a gift: a {genre} seed!',
+      giftCurrency: '🎁 {name} leaves you a gift: +{n} Golden Drops!',
+      speedDoubled: 'Growth speed doubled for {n} sec.',
+      speedTripled: 'Growth speed tripled for 90 sec.',
+      specialRequestText: "This time I have a special request: I could use a <b>{genre}</b> jar of higher rarity than Fresh. I'll reward generously whoever helps me!",
+      decayDonated1: '1 jar was given to the neighbors.',
+      decayDonatedN: '{n} jars were given to the neighbors.',
+      seedMissing: "You don't have any {genre} seeds.",
+      seedMissingShop: "You don't have any {genre} seeds. Visit the Nursery.",
+      growthRemaining: '{genre}: still {n}s of growth left.',
+      offlineProgress: "🕐 While you were away, {n} min passed: growth and income updated.",
+      craftBtnText: 'COMBINE 3 JARS ({n}/3) • Cost: {cost}',
+      pagesWord: 'g',
+      passiveGains: '🍯 Passively generates: +{income} drops/s',
+      boundMasterpiece: 'Incomparable Blend',
+      hasteSuffix: ' ⚡ (Growth x{mult}: {n}s)',
+      deliverBtn: 'Deliver',
+      infoBodyHtml:
+        '<p><b>🌱 Planting & harvesting.</b> Pick a seed from the bar at the bottom and tap an empty plot to plant it. Each flavor has a different growth time: once the flower blooms, tap it to harvest a new jar of honey for your pantry.</p>' +
+        '<p><b>🍯 Rarity & fusion.</b> Harvested jars start at Fresh rarity. Find 3 identical copies (same title, flavor, rarity and condition) to combine them into a single higher-rarity jar, spending Golden Drops.</p>' +
+        '<p><b>🔒 Unlocks.</b> The Heather and Royal flavors unlock once you get an Amber and a Golden jar respectively. Once unlocked, they stay unlocked forever.</p>' +
+        '<p><b>🍂 Seasons.</b> Time flows in cycles of Spring, Summer, Autumn and Winter, each with a different bonus to growth or earnings.</p>' +
+        '<p><b>🐻 Guests.</b> A little bear knocks on the garden and stays for 1 minute asking for a jar of a specific flavor (if you\'re already talking to them when time runs out, you can still hand it over). If you have nothing to give and close with "Maybe Later", they\'ll leave after 5 seconds. Every bear starts as a Stranger and visits more often as their bond grows: Acquaintance after 3 gifts, Friend after 5 more, Dear Friend after 8 more — and their visits become more frequent at each level. At higher levels you may receive a surprise gift on top of the boost, and a Dear Friend sometimes brings a special request (a higher-rarity jar) in exchange for a much bigger reward.</p>' +
+        '<p><b>🌧️ Weather events.</b> Rain and golden swarms show up unannounced: rain instantly speeds up your flowers, while the golden swarm opens a brief window you can tap for a Golden Drops bonus.</p>' +
+        '<p><b>🍯 Pantry.</b> Here you can browse every jar you\'ve collected, sort them and filter by flavor, rarity or condition.</p>' +
+        '<p><b>🍯 Decay.</b> A jar that\'s neither delivered nor re-combined within 8 seasons (about 2 years) gets given to the neighbors and leaves your collection. Every fusion resets the countdown.</p>' +
+        '<p><b>📔 Diary.</b> Tells you how many seeds you\'ve planted, how many jars you\'ve harvested, and how many you\'ve given to the neighbors over the last 4 seasons, and shows the bears you\'ve met along with the last thank-you message they left you.</p>'
+    }
+  };
+
+  function ui(key) { return UI_STRINGS[LANG][key]; }
+
+  function applyFontSize() {
+    document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
+    document.getElementById('fontNormalBtn').classList.toggle('active', FONT_SIZE === 'normal');
+    document.getElementById('fontLargeBtn').classList.toggle('active', FONT_SIZE === 'large');
+  }
+
+  window.setFontSize = function(size) {
+    FONT_SIZE = size;
+    try { localStorage.setItem('gardenFontSize', size); } catch(e) {}
+    applyFontSize();
+  };
+
+  window.setLanguage = function(lang) {
+    LANG = lang;
+    try { localStorage.setItem('gardenLang', lang); } catch(e) {}
+    applyLanguage();
+    if (state === 'garden' || state === 'shop' || state === 'catalog' || state === 'diary') updateHUD();
+    if (state === 'shop') buildShopGrid();
+    if (state === 'catalog') renderCatalog();
+    if (state === 'diary') { renderDiaryNarrative(); renderDiaryGuests(); }
+  };
+
+  window.openOptions = function() {
+    document.getElementById('optionsScreen').classList.remove('hidden');
+  };
+  window.closeOptions = function() {
+    document.getElementById('optionsScreen').classList.add('hidden');
+  };
+
+  function applyLanguage() {
+    document.getElementById('htmlRoot').lang = LANG;
+    document.getElementById('pageTitle').textContent = ui('pageTitle');
+    document.getElementById('startTitle').textContent = ui('startTitle');
+    document.getElementById('startIntro').textContent = ui('startIntro');
+    document.getElementById('continueBtn').textContent = ui('continueBtn');
+    document.getElementById('btnNewGame').textContent = ui('btnNewGame');
+    document.getElementById('btnHowTo').textContent = ui('btnHowTo');
+    document.getElementById('btnOptions').textContent = ui('btnOptions');
+    document.getElementById('confirmTitle').textContent = ui('confirmTitle');
+    document.getElementById('confirmText').textContent = ui('confirmText');
+    document.getElementById('btnConfirmYes').textContent = ui('btnConfirmYes');
+    document.getElementById('btnConfirmNo').textContent = ui('btnConfirmNo');
+    document.getElementById('optionsTitle').textContent = ui('optionsTitle');
+    document.getElementById('optFontLabel').textContent = ui('optFontLabel');
+    document.getElementById('fontNormalBtn').textContent = ui('fontNormalBtn');
+    document.getElementById('fontLargeBtn').textContent = ui('fontLargeBtn');
+    document.getElementById('optLangLabel').textContent = ui('optLangLabel');
+    document.getElementById('langItBtn').textContent = ui('langItBtn');
+    document.getElementById('langEnBtn').textContent = ui('langEnBtn');
+    document.getElementById('langItBtn').classList.toggle('active', LANG === 'it');
+    document.getElementById('langEnBtn').classList.toggle('active', LANG === 'en');
+    document.getElementById('btnOptionsClose').textContent = ui('btnOptionsClose');
+    document.getElementById('btnMenu').textContent = ui('btnMenu');
+    document.getElementById('btnDiary').textContent = ui('btnDiary');
+    document.getElementById('btnShop').textContent = ui('btnShop');
+    document.getElementById('btnCatalog').textContent = ui('btnCatalog');
+    document.getElementById('shopTitle').textContent = ui('shopTitle');
+    document.getElementById('shopDesc').textContent = ui('shopDesc');
+    document.getElementById('btnShopClose').textContent = ui('continueBtn');
+    document.getElementById('catalogTitle').textContent = ui('catalogTitle');
+    document.getElementById('catalogEmpty').textContent = ui('catalogEmpty');
+    document.getElementById('f-date').textContent = ui('sortRecent');
+    document.getElementById('f-genre').textContent = ui('sortGenre');
+    document.getElementById('f-rarity').textContent = ui('sortRarity');
+    document.getElementById('optAllGenres').textContent = ui('optAllGenres');
+    document.getElementById('optAllRarities').textContent = ui('optAllRarities');
+    document.getElementById('optAllConditions').textContent = ui('optAllConditions');
+    document.getElementById('btnCatalogClose').textContent = ui('continueBtn');
+    document.getElementById('btnPutBack').textContent = ui('btnPutBack');
+    document.getElementById('orderGuestTitle').textContent = ui('orderDefaultTitle');
+    document.getElementById('orderGuestText').textContent = ui('orderDefaultText');
+    document.getElementById('orderNoBooks').textContent = ui('orderNoBooks');
+    document.getElementById('btnMaybeLater').textContent = ui('btnMaybeLater');
+    document.getElementById('infoTitle').textContent = ui('infoTitle');
+    document.getElementById('infoBody').innerHTML = ui('infoBodyHtml');
+    document.getElementById('btnGotIt').textContent = ui('btnGotIt');
+    document.getElementById('diaryTitle').textContent = ui('diaryTitle');
+    document.getElementById('diaryKnownGuests').textContent = ui('diaryKnownGuests');
+    document.getElementById('btnDiaryClose').textContent = ui('btnDiaryClose');
+    document.getElementById('introPhrase').textContent = ui('introPhrase');
+  }
+
   var gameStart, currency, seedInventory, plots, catalog, selectedGenre;
   var currentSort = 'date'; 
   var currentSelectedBook = null;
@@ -537,7 +880,29 @@
   var seasonReminderTimer = null; // Timer per nascondere il promemoria del bonus stagionale
 
   // --- Sistema di grado/relazione con gli ospiti ---
-  var GUEST_TIER_NAMES = ['Sconosciuto', 'Conoscente', 'Amico', 'Caro Amico'];
+  var GUEST_TIER_NAMES_BY_LANG = {
+    it: ['Sconosciuto', 'Conoscente', 'Amico', 'Caro Amico'],
+    en: ['Stranger', 'Acquaintance', 'Friend', 'Dear Friend']
+  };
+  function tierName(idx) { return GUEST_TIER_NAMES_BY_LANG[LANG][idx]; }
+  var GUEST_GRATITUDE_BY_LANG = {
+    it: [
+      '{name} ti ringrazia con un cenno del muso.',
+      '{name} sorride e ti ringrazia di cuore.',
+      '{name} ti abbraccia felice: "Sei un vero amico!"',
+      '{name} ha gli occhi lucidi: "Non so cosa farei senza di te."'
+    ],
+    en: [
+      '{name} thanks you with a nod of the muzzle.',
+      '{name} smiles and thanks you warmly.',
+      '{name} hugs you happily: "You\'re a true friend!"',
+      '{name} has tears in their eyes: "I don\'t know what I\'d do without you."'
+    ]
+  };
+  var GUEST_GRATITUDE_SPECIAL_BY_LANG = {
+    it: '{name} è al settimo cielo: "Questo dono vale più di quanto immagini... grazie di cuore!"',
+    en: '{name} is over the moon: "This gift means more than you know... thank you so much!"'
+  };
   var GUEST_TIER_HASTE_SECONDS = [30, 40, 50, 60];
   var GUEST_TIER_THRESHOLDS = [3, 8, 16]; // consegne cumulative per salire di grado (Sconosciuto->Conoscente->Amico->Caro Amico)
   var GUEST_TIER_COOLDOWN_SECONDS = [210, 180, 150, 120]; // 3m30s / 3m / 2m30s / 2m tra una visita e l'altra
@@ -563,10 +928,14 @@
     return Math.floor((Date.now() - gameStart) / SEASON_LENGTH);
   }
 
-  function recordSeasonEvent(field) {
+  var DECAY_SEASONS = 8; // 2 anni di gioco = 8 stagioni
+  var lastDecayCheck = Date.now();
+
+  function recordSeasonEvent(field, amount) {
+    amount = amount || 1;
     var idx = currentSeasonIndex();
-    if (!seasonStats[idx]) seasonStats[idx] = { planted: 0, harvested: 0 };
-    seasonStats[idx][field]++;
+    if (!seasonStats[idx]) seasonStats[idx] = { planted: 0, harvested: 0, donated: 0 };
+    seasonStats[idx][field] += amount;
     Object.keys(seasonStats).forEach(function(k) {
       if (parseInt(k, 10) < idx - 5) delete seasonStats[k];
     });
@@ -594,14 +963,14 @@
     if (Math.random() < 0.3) {
       seedInventory[genreKey] = (seedInventory[genreKey] || 0) + 1;
       setTimeout(function() {
-        showToast('🎁 ' + guestName + ' ti lascia in dono un seme di ' + GENRES[genreKey].name + '!');
+        showToast(ui('giftSeed').replace('{name}', guestName).replace('{genre}', genreName(genreKey)));
         updateHUD();
       }, 3400);
     } else {
       var bonus = Math.floor(Math.random() * 11) + 5;
       currency += bonus;
       setTimeout(function() {
-        showToast('🎁 ' + guestName + ' ti lascia in dono +' + bonus + ' Gocce d\'Oro!');
+        showToast(ui('giftCurrency').replace('{name}', guestName).replace('{n}', bonus));
         updateHUD();
       }, 3400);
     }
@@ -699,7 +1068,7 @@
 
       if (offlineSeconds > 60) {
         var mins = Math.floor(offlineSeconds / 60);
-        pendingOfflineMsg = '🕐 Mentre eri via sono passati ' + mins + ' min: crescita e rendita aggiornate.';
+        pendingOfflineMsg = ui('offlineProgress').replace('{n}', mins);
       }
     }
   }
@@ -759,8 +1128,9 @@
 
   function showSeasonReminder(s) {
     var reminder = document.getElementById('seasonBonusReminder');
-    if (!s.friendlyMsg) return;
-    reminder.textContent = s.friendlyMsg;
+    var msg = seasonFriendlyMsg(s);
+    if (!msg) return;
+    reminder.textContent = msg;
     reminder.style.opacity = '1';
     clearTimeout(seasonReminderTimer);
     seasonReminderTimer = setTimeout(function() {
@@ -776,12 +1146,12 @@
     var hasteText = "";
     if (Date.now() < growthHasteUntil) {
       var remainingHaste = Math.ceil((growthHasteUntil - Date.now()) / 1000);
-      hasteText = " ⚡ (Crescita x2: " + remainingHaste + "s)";
+      hasteText = ui('hasteSuffix').replace('{mult}', growthHasteMultiplier).replace('{n}', remainingHaste);
     }
-    document.getElementById('currencyTopDisplay').textContent = "Gocce d'Oro: " + Math.floor(currency) + hasteText;
+    document.getElementById('currencyTopDisplay').textContent = ui('currencyName') + ": " + Math.floor(currency) + hasteText;
     var s = currentSeason();
-    document.getElementById('seasonDisplay').textContent = s.icon + ' ' + s.name;
-    document.getElementById('seasonDisplay').title = s.desc;
+    document.getElementById('seasonDisplay').textContent = s.icon + ' ' + seasonDisplayName(s);
+    document.getElementById('seasonDisplay').title = seasonDescText(s);
 
     if (s.name !== lastSeasonName) {
       lastSeasonName = s.name;
@@ -808,11 +1178,11 @@
       var unlocked = isGenreUnlocked(g);
       if(!unlocked && count <= 0) {
         chip.style.opacity = '0.3';
-        chip.innerHTML = '<div class="dot" style="background:#444"></div>🔒 Bloccato';
+        chip.innerHTML = '<div class="dot" style="background:#444"></div>🔒 ' + ui('lockedBtn');
       } else {
-        chip.innerHTML = '<div class="dot" style="background:' + def.color + '"></div>' + def.name + '<br>' + count;
+        chip.innerHTML = '<div class="dot" style="background:' + def.color + '"></div>' + genreName(g) + '<br>' + count;
         chip.onclick = function() {
-          if (count <= 0) { showToast('Non hai semi di ' + def.name + '. Visita il Vivaio.'); return; }
+          if (count <= 0) { showToast(ui('seedMissingShop').replace('{genre}', genreName(g))); return; }
           selectedGenre = g;
           renderSeedBar();
         };
@@ -827,7 +1197,7 @@
     if (currentWeather && now > weatherEndAt) {
       currentWeather = null;
       windTarget = null;
-      showToast("Il cielo torna sereno nel giardino.");
+      showToast(ui('weatherClear'));
     }
 
     // Generazione particelle continuamente
@@ -926,7 +1296,7 @@
     if (activeGuest) {
       if (!activeGuest.spawnedAt) activeGuest.spawnedAt = now;
       if (state !== 'order' && now - activeGuest.spawnedAt > GUEST_STAY_MS) {
-        dismissGuest(activeGuest.name + " ha atteso troppo ed è andato via...");
+        dismissGuest(guestDisplayName(activeGuest) + ui('guestLeftTimeout'));
       }
     } else {
       if (now - lastGuestCheck > guestCooldownMs) {
@@ -942,7 +1312,7 @@
           var bubble = document.getElementById('guestBubble');
           bubble.innerHTML = '<img src="' + guestIconDataUri(activeGuest.name) + '" style="width:100%;height:100%;object-fit:cover;object-position:center 32%;border-radius:50%;">';
           bubble.style.display = 'flex';
-          showToast(activeGuest.name + " è arrivato! Resterà per 1 minuto.");
+          showToast(guestDisplayName(activeGuest) + ui('guestArrivedSuffix'));
           saveGame();
         }
       }
@@ -956,7 +1326,7 @@
         if (Math.random() < 0.5) {
           currentWeather = 'rain';
           weatherEndAt = now + 25000; // Dura 25 secondi
-          showToast("🌧️ Una Pioggia Benefica bagna il giardino! Piante accelerate.");
+          showToast(ui('weatherRain'));
           // Effetto Pioggia Immediato: Accelera istantaneamente di 15 secondi tutte le piante
           for (var pIdx = 0; pIdx < plots.length; pIdx++) {
             if (plots[pIdx]) plots[pIdx].progressSeconds += 15;
@@ -965,8 +1335,27 @@
         } else {
           currentWeather = 'wind';
           weatherEndAt = now + 15000; // Dura 15 secondi
-          showToast("Uno Sciame Dorato 🐝 attraversa il giardino. Clicca la scia dorata!");
+          showToast(ui('weatherWind'));
         }
+      }
+    }
+
+    // 5. Deperimento: i vasetti troppo vecchi (8 stagioni) vengono donati ai vicini di casa
+    if (now - lastDecayCheck > 15000) {
+      lastDecayCheck = now;
+      var decayMs = SEASON_LENGTH * DECAY_SEASONS;
+      var donatedCount = 0;
+      for (var di = catalog.length - 1; di >= 0; di--) {
+        if (now - catalog[di].harvestedAt > decayMs) {
+          catalog.splice(di, 1);
+          donatedCount++;
+        }
+      }
+      if (donatedCount > 0) {
+        recordSeasonEvent('donated', donatedCount);
+        showToast('🍯 ' + (donatedCount === 1 ? ui('decayDonated1') : ui('decayDonatedN').replace('{n}', donatedCount)));
+        updateHUD();
+        saveGame();
       }
     }
   }
@@ -984,6 +1373,7 @@
     lastPassiveTick = Date.now();
     lastGuestCheck = Date.now();
     lastWeatherCheck = Date.now();
+    lastDecayCheck = Date.now();
     layoutPlots();
     updateHUD();
 
@@ -1036,6 +1426,7 @@
     lastPassiveTick = Date.now();
     lastGuestCheck = Date.now();
     lastWeatherCheck = Date.now();
+    lastDecayCheck = Date.now();
     layoutPlots();
     updateHUD();
     if (pendingOfflineMsg) { showToast(pendingOfflineMsg); pendingOfflineMsg = null; }
@@ -1065,16 +1456,26 @@
   var QUESTO_QUESTA = { Primavera:'Questa', Estate:'Questa', Autunno:'Questo', Inverno:'Questo' };
   var LO_SCORSO_LA_SCORSA = { Primavera:'La scorsa', Estate:'La scorsa', Autunno:'Lo scorso', Inverno:'Lo scorso' };
 
-  function seasonNarrativeLine(distance, seasonName, planted, harvested) {
+  function seasonNarrativeLine(distance, s, planted, harvested, donated) {
+    var displayName = seasonDisplayName(s);
+    if (LANG === 'en') {
+      var itemWordEn = (harvested === 1) ? 'jar' : 'jars';
+      var donatedWordEn = (donated === 1) ? 'jar' : 'jars';
+      if (distance === 0) return 'This ' + displayName + ', so far, I\'ve planted ' + planted + ' seeds, harvested ' + harvested + ' ' + itemWordEn + ', and given ' + donated + ' to the neighbors.';
+      if (distance === 1) return 'Last ' + displayName + ', I planted ' + planted + ' seeds and harvested... hmm, let me think... ' + harvested + ' ' + itemWordEn + ', giving ' + donated + ' to the neighbors.';
+      if (distance === 2) return 'In ' + displayName + ', if I remember correctly, I had planted ' + planted + ' seeds, harvested ' + harvested + ' ' + itemWordEn + ', and given ' + donated + ' ' + donatedWordEn + ' to the neighbors.';
+      return 'Last ' + displayName + ' I might have planted ' + planted + ' seeds and harvested ' + harvested + ' ' + itemWordEn + ', perhaps giving ' + donated + ' to the neighbors... but maybe it was just a dream.';
+    }
     var itemWord = (harvested === 1) ? 'vasetto' : 'vasetti';
+    var donatedWord = (donated === 1) ? 'vasetto' : 'vasetti';
     if (distance === 0) {
-      return QUESTO_QUESTA[seasonName] + ' ' + seasonName + ', sino ad oggi, ho piantato ' + planted + ' semi e ho raccolto ' + harvested + ' ' + itemWord + '.';
+      return QUESTO_QUESTA[s.name] + ' ' + displayName + ', sino ad oggi, ho piantato ' + planted + ' semi, ho raccolto ' + harvested + ' ' + itemWord + ' e ne ho donati ' + donated + ' ai vicini di casa.';
     } else if (distance === 1) {
-      return LO_SCORSO_LA_SCORSA[seasonName] + ' ' + seasonName + ', invece, ho piantato ' + planted + ' semi e ho raccolto... mmmh, fammi pensare... ' + harvested + ' ' + itemWord + '.';
+      return LO_SCORSO_LA_SCORSA[s.name] + ' ' + displayName + ', invece, ho piantato ' + planted + ' semi e ho raccolto... mmmh, fammi pensare... ' + harvested + ' ' + itemWord + ', donandone ' + donated + ' ai vicini.';
     } else if (distance === 2) {
-      return 'In ' + seasonName + ', se non ricordo male, avevo piantato ' + planted + ' semi e avevo raccolto ' + harvested + ' ' + itemWord + '.';
+      return 'In ' + displayName + ', se non ricordo male, avevo piantato ' + planted + ' semi, raccolto ' + harvested + ' ' + itemWord + ' e donato ' + donated + ' ' + donatedWord + ' ai vicini.';
     } else {
-      return LO_SCORSO_LA_SCORSA[seasonName] + ' ' + seasonName + ' potrei aver piantato ' + planted + ' semi e raccolto ' + harvested + ' ' + itemWord + '... ma forse era solo un sogno.';
+      return LO_SCORSO_LA_SCORSA[s.name] + ' ' + displayName + ' potrei aver piantato ' + planted + ' semi e raccolto ' + harvested + ' ' + itemWord + ', donandone forse ' + donated + ' ai vicini... ma forse era solo un sogno.';
     }
   }
 
@@ -1083,9 +1484,9 @@
     var html = '';
     for (var i = 0; i < 4; i++) {
       var idx = idx0 - i;
-      var seasonName = SEASONS[((idx % 4) + 4) % 4].name;
-      var stats = seasonStats[idx] || { planted: 0, harvested: 0 };
-      html += '<p>' + seasonNarrativeLine(i, seasonName, stats.planted, stats.harvested) + '</p>';
+      var s = SEASONS[((idx % 4) + 4) % 4];
+      var stats = seasonStats[idx] || { planted: 0, harvested: 0, donated: 0 };
+      html += '<p>' + seasonNarrativeLine(i, s, stats.planted, stats.harvested, stats.donated || 0) + '</p>';
     }
     document.getElementById('diaryNarrative').innerHTML = html;
   }
@@ -1104,11 +1505,15 @@
     section.style.display = 'block';
     if (diaryGuestIndex >= met.length) diaryGuestIndex = 0;
     var g = met[diaryGuestIndex];
-    var tier = guestTierIndex(guestRelations[g.name].deliveries);
+    var relation = guestRelations[g.name];
+    var tier = guestTierIndex(relation.deliveries);
+    var lastMsgHtml = relation.lastThankYou
+      ? '<div style="font-size:0.75rem; font-style:italic; color:#4f5c3c; text-align:center; margin-top:6px; max-width:200px;">' + relation.lastThankYou + '</div>'
+      : '';
     document.getElementById('diaryGuestCard').innerHTML =
       '<div style="width:88px; height:88px;"><img src="' + guestIconDataUri(g.name) + '" style="width:100%;height:100%;object-fit:contain;"></div>' +
-      '<div style="font-weight:bold; font-size:0.82rem; text-align:center;">' + g.name + '</div>' +
-      '<div style="font-size:0.75rem; color:#7f8f6c;">' + GUEST_TIER_NAMES[tier] + '</div>';
+      '<div style="font-weight:bold; font-size:0.82rem; text-align:center;">' + guestDisplayName(g) + '</div>' +
+      '<div style="font-size:0.75rem; color:#7f8f6c;">' + tierName(tier) + '</div>' + lastMsgHtml;
     var showArrows = met.length > 1;
     document.getElementById('diaryPrevBtn').style.display = showArrows ? 'inline-block' : 'none';
     document.getElementById('diaryNextBtn').style.display = showArrows ? 'inline-block' : 'none';
@@ -1154,7 +1559,7 @@
         windTarget.active = false;
         var bonusGold = Math.floor(Math.random() * 3) + 2;
         currency += bonusGold;
-        showToast("✨ Afferrato! Guadagnate +" + bonusGold + " Gocce d'Oro!");
+        showToast(ui('windCaught').replace('{n}', bonusGold));
         tone(880, 0.2, 'triangle', 0.1, 1200);
         updateHUD();
         return;
@@ -1168,7 +1573,7 @@
     var plot = plots[idx];
     if (!plot) {
       var def = GENRES[selectedGenre];
-      if (seedInventory[selectedGenre] <= 0) { showToast('Non hai semi di ' + def.name + '.'); sfxBlocked(); return; }
+      if (seedInventory[selectedGenre] <= 0) { showToast(ui('seedMissing').replace('{genre}', genreName(selectedGenre))); sfxBlocked(); return; }
       plots[idx] = { genre: selectedGenre, plantedAt: Date.now(), progressSeconds: 0 };
       seedInventory[selectedGenre]--;
       recordSeasonEvent('planted');
@@ -1197,7 +1602,7 @@
       } else {
         var g2 = GENRES[plot.genre];
         var remaining = Math.max(0, Math.ceil(g2.growTime - plot.progressSeconds));
-        showToast(g2.name + ': ancora ' + remaining + 's di crescita.');
+        showToast(ui('growthRemaining').replace('{genre}', genreName(plot.genre)).replace('{n}', remaining));
       }
     }
   }
@@ -1211,15 +1616,15 @@
   });
 
   function generateBook(genre) {
-    var tw = TITLE_WORDS[genre];
+    var tw = TITLE_WORDS[LANG][genre];
     var pre = tw.pre[Math.floor(Math.random()*tw.pre.length)];
     var noun = tw.noun[Math.floor(Math.random()*tw.noun.length)];
     var title = pre + ' ' + noun;
-    var blurb = BLURBS[genre][Math.floor(Math.random()*BLURBS[genre].length)];
+    var blurb = BLURBS[LANG][genre][Math.floor(Math.random()*BLURBS[LANG][genre].length)];
     
     var uniqueId = 'bk_' + Date.now() + '_' + Math.floor(Math.random()*10000);
     var randomPages = Math.floor(Math.random() * 250) + 45; 
-    var randomCondition = BOOK_CONDITIONS[Math.floor(Math.random() * BOOK_CONDITIONS.length)];
+    var randomCondition = BOOK_CONDITIONS[LANG][Math.floor(Math.random() * BOOK_CONDITIONS[LANG].length)];
 
     return { 
       id: uniqueId, genre: genre, title: title, blurb: blurb, rarity: 0, 
@@ -1233,15 +1638,15 @@
     var rarityDef = RARITIES[book.rarity];
     
     document.getElementById('bookRevealScreen').querySelector('h1').textContent = book.title;
-    document.getElementById('bookRevealGenre').textContent = def.name;
+    document.getElementById('bookRevealGenre').textContent = genreName(book.genre);
     document.getElementById('bookRevealGenre').style.color = def.color;
-    document.getElementById('bookRevealRarity').textContent = rarityDef.name;
+    document.getElementById('bookRevealRarity').textContent = rarityName(book.rarity);
     document.getElementById('bookRevealRarity').style.color = rarityDef.color;
     document.getElementById('bookRevealSpecs').textContent = book.pages + 'g • ' + book.condition;
     
     var passiveEl = document.getElementById('bookPassiveGains');
     if (rarityDef.income > 0) {
-      passiveEl.textContent = '🍯 Genera passivamente: +' + rarityDef.income + ' gocce/s';
+      passiveEl.textContent = ui('passiveGains').replace('{income}', rarityDef.income);
       passiveEl.style.display = 'block';
     } else { passiveEl.style.display = 'none'; }
     
@@ -1254,7 +1659,7 @@
         return b.title === book.title && b.genre === book.genre && b.rarity === book.rarity && b.condition === book.condition; 
       }).length;
       
-      craftBtn.textContent = 'UNISCI 3 VASETTI (' + matches + '/3) • Costo: ' + nextRarityDef.cost;
+      craftBtn.textContent = ui('craftBtnText').replace('{n}', matches).replace('{cost}', nextRarityDef.cost);
       craftBtn.classList.remove('hidden');
       
       if (matches >= 3 && currency >= nextRarityDef.cost) {
@@ -1293,9 +1698,9 @@
     
     var upgradedBook = {
       id: 'bk_' + Date.now() + '_' + Math.floor(Math.random()*10000),
-      genre: book.genre, title: nextRarityDef.prefix + book.title, 
-      blurb: FUSING_BLURBS[Math.floor(Math.random() * FUSING_BLURBS.length)],
-      rarity: nextRarity, pages: book.pages + 60, condition: 'Miscela Impareggiabile', harvestedAt: Date.now()
+      genre: book.genre, title: rarityPrefix(nextRarity) + book.title, 
+      blurb: FUSING_BLURBS[LANG][Math.floor(Math.random() * FUSING_BLURBS[LANG].length)],
+      rarity: nextRarity, pages: book.pages + 60, condition: ui('boundMasterpiece'), harvestedAt: Date.now()
     };
     
     catalog.push(upgradedBook);
@@ -1317,14 +1722,14 @@
     state = 'order';
     var relation = guestRelations[activeGuest.name] || { deliveries: 0 };
     var tierNow = guestTierIndex(relation.deliveries);
-    document.getElementById('orderGuestTitle').textContent = activeGuest.name + ' · ' + GUEST_TIER_NAMES[tierNow] + (activeGuest.isSpecialRequest ? ' ✨' : '');
+    document.getElementById('orderGuestTitle').textContent = guestDisplayName(activeGuest) + ' · ' + tierName(tierNow) + (activeGuest.isSpecialRequest ? ' ✨' : '');
     document.getElementById('orderGuestPortrait').innerHTML = '<img src="' + guestIconDataUri(activeGuest.name) + '" style="width:100%;height:100%;object-fit:contain;">';
     
     var targetGenre = GUEST_REQ_MAP[activeGuest.name];
     if (activeGuest.isSpecialRequest) {
-      document.getElementById('orderGuestText').innerHTML = 'Questa volta ho una richiesta speciale: mi servirebbe un vasetto di <b>' + GENRES[targetGenre].name + '</b> di rarità superiore a Fresco. Saprò ricompensare generosamente chi mi aiuta!';
+      document.getElementById('orderGuestText').innerHTML = ui('specialRequestText').replace('{genre}', genreName(targetGenre));
     } else {
-      document.getElementById('orderGuestText').innerHTML = activeGuest.dialogue;
+      document.getElementById('orderGuestText').innerHTML = guestDialogue(activeGuest);
     }
 
     var matches = catalog.filter(function(b) {
@@ -1359,10 +1764,10 @@
       groups.forEach(function(g) {
         var row = document.createElement('div');
         row.className = 'match-row';
-        var rarityName = RARITIES[g.rarity].name;
+        var rarityLabel = rarityName(g.rarity);
         var countLabel = g.count > 1 ? ' (' + g.count + ')' : '';
-        row.innerHTML = '<div><b>' + g.title + countLabel + '</b><br><small>' + rarityName + ' • ' + g.condition + '</small></div>' +
-                        '<button onclick="fulfillOrder(\'' + g.ids[0] + '\')">Consegna</button>';
+        row.innerHTML = '<div><b>' + g.title + countLabel + '</b><br><small>' + rarityLabel + ' • ' + g.condition + '</small></div>' +
+                        '<button onclick="fulfillOrder(\'' + g.ids[0] + '\')">' + ui('deliverBtn') + '</button>';
         listContainer.appendChild(row);
       });
     }
@@ -1379,7 +1784,7 @@
       clearTimeout(guestNoMatchTimer);
       guestNoMatchTimer = setTimeout(function() {
         if (activeGuest && activeGuest.name === guestNameAtClose) {
-          dismissGuest(activeGuest.name + " se n'è andato in cerca di qualcun altro...");
+          dismissGuest(guestDisplayName(activeGuest) + ui('guestLeftNoMatch'));
         }
       }, 5000);
     }
@@ -1398,33 +1803,36 @@
     if (!relation) { relation = { deliveries: 0, met: true }; guestRelations[activeGuest.name] = relation; }
 
     var tierBefore = guestTierIndex(relation.deliveries);
-    var guestNameForToast = activeGuest.name;
+    var guestNameForToast = guestDisplayName(activeGuest);
     var guestGenre = GUEST_REQ_MAP[activeGuest.name];
     var wasSpecial = activeGuest.isSpecialRequest;
+
+    var gratitudeMsg = (wasSpecial ? GUEST_GRATITUDE_SPECIAL_BY_LANG[LANG] : GUEST_GRATITUDE_BY_LANG[LANG][tierBefore]).replace('{name}', guestNameForToast);
+    relation.lastThankYou = gratitudeMsg;
 
     if (wasSpecial) {
       growthHasteMultiplier = 3.0;
       growthHasteUntil = Date.now() + 90000;
-      showToast(guestNameForToast + " è entusiasta! Velocità triplicata per 90 sec.");
+      showToast(gratitudeMsg + ' ' + ui('speedTripled'));
     } else {
       var hasteSeconds = GUEST_TIER_HASTE_SECONDS[tierBefore];
       growthHasteMultiplier = 2.0;
       growthHasteUntil = Date.now() + hasteSeconds * 1000;
-      showToast(guestNameForToast + " ringrazia! Velocità raddoppiata per " + hasteSeconds + " sec.");
+      showToast(gratitudeMsg + ' ' + ui('speedDoubled').replace('{n}', hasteSeconds));
     }
 
     relation.deliveries++;
     var tierAfter = guestTierIndex(relation.deliveries);
     if (tierAfter > tierBefore) {
       setTimeout(function() {
-        showToast(guestNameForToast + " ora ti considera un " + GUEST_TIER_NAMES[tierAfter] + "!");
+        showToast(guestNameForToast + ui('tierUpSuffix') + tierName(tierAfter) + "!");
       }, 1800);
     }
 
     if (wasSpecial) {
       seedInventory[guestGenre] = (seedInventory[guestGenre] || 0) + 1;
       setTimeout(function() {
-        showToast('🎁 ' + guestNameForToast + ' ti lascia in dono un seme di ' + GENRES[guestGenre].name + '!');
+        showToast(ui('giftSeed').replace('{name}', guestNameForToast).replace('{genre}', genreName(guestGenre)));
         updateHUD();
       }, 3400);
     } else {
@@ -1451,7 +1859,7 @@
   var shopRowRefs = {}; // g -> { infoSpan, btn, def } oppure null se il genere è bloccato
 
   function buildShopGrid() {
-    document.getElementById('currencyDisplay').textContent = "🍯 " + Math.floor(currency) + " Gocce d'Oro";
+    document.getElementById('currencyDisplay').textContent = "🍯 " + Math.floor(currency) + " " + ui('currencyName');
     var grid = document.getElementById('shopGrid');
     grid.innerHTML = '';
     shopRowRefs = {};
@@ -1463,9 +1871,9 @@
       var unlocked = isGenreUnlocked(g);
 
       if (!unlocked) {
-        var reqLabel = (g === 'brughiera') ? "Richiede un vasetto 'Ambrato'" : "Richiede un vasetto 'Dorato'";
-        row.innerHTML = '<div class="info"><b style="color:#777">🔒 ' + def.name + '</b><span style="color:#b06060">' + reqLabel + '</span></div>' +
-                        '<button disabled style="background:#888">Bloccato</button>';
+        var reqLabel = (g === 'brughiera') ? ui('reqAncient') : ui('reqRare');
+        row.innerHTML = '<div class="info"><b style="color:#777">🔒 ' + genreName(g) + '</b><span style="color:#b06060">' + reqLabel + '</span></div>' +
+                        '<button disabled style="background:#888">' + ui('lockedBtn') + '</button>';
         grid.appendChild(row);
         shopRowRefs[g] = null;
       } else {
@@ -1473,7 +1881,7 @@
         infoDiv.className = 'info';
         var b = document.createElement('b');
         b.style.color = def.color;
-        b.textContent = def.name;
+        b.textContent = genreName(g);
         var infoSpan = document.createElement('span');
         infoDiv.appendChild(b);
         infoDiv.appendChild(infoSpan);
@@ -1494,12 +1902,12 @@
   }
 
   function updateShopGrid() {
-    document.getElementById('currencyDisplay').textContent = "🍯 " + Math.floor(currency) + " Gocce d'Oro";
+    document.getElementById('currencyDisplay').textContent = "🍯 " + Math.floor(currency) + " " + ui('currencyName');
     GENRE_KEYS.forEach(function(g) {
       var ref = shopRowRefs[g];
       if (!ref) return; // riga bloccata, statica: nulla da aggiornare
       var price = seasonPrice(g);
-      ref.infoSpan.textContent = 'Cresce in ' + ref.def.growTime + 's · In possesso: ' + seedInventory[g];
+      ref.infoSpan.textContent = ui('growsIn').replace('{n}', ref.def.growTime) + ' · ' + ui('inStock') + ': ' + seedInventory[g];
       ref.btn.textContent = '✧ ' + price;
       ref.btn.disabled = currency < price;
     });
@@ -1547,9 +1955,9 @@
     var genresPresent = GENRE_KEYS.filter(function(g) {
       return catalog.some(function(b) { return b.genre === g; });
     });
-    selGenre.innerHTML = '<option value="all">Tutti i Gusti</option>' +
+    selGenre.innerHTML = '<option value="all">' + ui('optAllGenres') + '</option>' +
       genresPresent.map(function(g) {
-        return '<option value="' + g + '">' + GENRES[g].name + '</option>';
+        return '<option value="' + g + '">' + genreName(g) + '</option>';
       }).join('');
 
     // Rarità presenti, in ordine crescente
@@ -1557,16 +1965,17 @@
     RARITIES.forEach(function(r, idx) {
       if (catalog.some(function(b) { return b.rarity === idx; })) raritiesPresent.push(idx);
     });
-    selRarity.innerHTML = '<option value="all">Tutte le Rarità</option>' +
+    selRarity.innerHTML = '<option value="all">' + ui('optAllRarities') + '</option>' +
       raritiesPresent.map(function(idx) {
-        return '<option value="' + idx + '">' + RARITIES[idx].name + '</option>';
+        return '<option value="' + idx + '">' + rarityName(idx) + '</option>';
       }).join('');
 
-    // Condizioni presenti, nell'ordine di BOOK_CONDITIONS
-    var conditionsPresent = BOOK_CONDITIONS.filter(function(c) {
-      return catalog.some(function(b) { return b.condition === c; });
+    // Condizioni presenti (dedotte direttamente dal catalogo, per restare valide anche se contiene testi in lingue diverse)
+    var conditionsPresent = [];
+    catalog.forEach(function(b) {
+      if (conditionsPresent.indexOf(b.condition) === -1) conditionsPresent.push(b.condition);
     });
-    selCondition.innerHTML = '<option value="all">Tutte le Condizioni</option>' +
+    selCondition.innerHTML = '<option value="all">' + ui('optAllConditions') + '</option>' +
       conditionsPresent.map(function(c) {
         return '<option value="' + c + '">' + c + '</option>';
       }).join('');
@@ -1587,7 +1996,7 @@
     // Se non ci sono proprio vasetti nel gioco
     if (!catalog.length) {
       empty.style.display = 'block';
-      empty.textContent = "Non hai ancora raccolto nessun vasetto di miele.";
+      empty.textContent = ui('catalogEmpty');
       container.innerHTML = ''; 
       return;
     }
@@ -1616,7 +2025,7 @@
     
     // Se nessun vasetto corrisponde alla combinazione dei filtri scelti
     if (filtered.length === 0) {
-      container.innerHTML = '<p style="font-size:0.85rem; color:#7f8f6c; text-align:center; padding:20px; width:100%;">Nessun vasetto corrisponde ai filtri selezionati.</p>';
+      container.innerHTML = '<p style="font-size:0.85rem; color:#7f8f6c; text-align:center; padding:20px; width:100%;">' + ui('noMatchFilters') + '</p>';
       return;
     }
 
@@ -1728,6 +2137,7 @@
     requestAnimationFrame(loop);
   }
 
+  applyLanguage(); applyFontSize();
   defaultState(); resize();
   if (hasSave()) document.getElementById('continueBtn').style.display = 'block';
   requestAnimationFrame(loop);
