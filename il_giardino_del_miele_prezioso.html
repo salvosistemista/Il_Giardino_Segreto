@@ -47,9 +47,9 @@
   #seedBar {
     position: fixed; bottom: max(96px, calc(env(safe-area-inset-bottom) + 86px));
     left: 50%; transform: translateX(-50%);
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; z-index: 6;
-    max-width: 300px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 6;
   }
+  #seedRow1, #seedRow2 { display: flex; gap: 8px; justify-content: center; }
   .seedChip {
     background: rgba(255,255,255,0.55); border: 2px solid transparent;
     border-radius: 10px; padding: 6px 10px; font-size: 0.72rem; color: #445533;
@@ -236,7 +236,7 @@
 
 <div id="guestBubble" onclick="openOrderOverlay()">🦉</div>
 
-<div id="seedBar"></div>
+<div id="seedBar"><div id="seedRow1"></div><div id="seedRow2"></div></div>
 <div id="bottomBar">
   <div class="bottomBarCol">
     <button class="ctrlBtn" onclick="returnToMenu()" id="btnMenu">🏠 Menu</button>
@@ -281,7 +281,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.43</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.44</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -785,7 +785,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.43';
+  var GAME_VERSION = '1.44';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -1180,9 +1180,10 @@
   }
 
   function renderSeedBar() {
-    var bar = document.getElementById('seedBar');
-    bar.innerHTML = '';
-    GENRE_KEYS.forEach(function(g) {
+    var row1 = document.getElementById('seedRow1');
+    var row2 = document.getElementById('seedRow2');
+    row1.innerHTML = ''; row2.innerHTML = '';
+    GENRE_KEYS.forEach(function(g, idx) {
       var def = GENRES[g];
       var count = seedInventory[g];
       var chip = document.createElement('div');
@@ -1201,7 +1202,7 @@
           renderSeedBar();
         };
       }
-      bar.appendChild(chip);
+      (idx < 4 ? row1 : row2).appendChild(chip);
     });
   }
 
