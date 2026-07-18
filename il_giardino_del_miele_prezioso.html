@@ -339,7 +339,7 @@
     <p><b>🐻 Ospiti.</b> Un orsetto bussa al giardino e resta 1 minuto chiedendo un vasetto di un gusto specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni orsetto parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un vasetto di rarità superiore) in cambio di una ricompensa molto più generosa.</p>
     <p><b>🌧️ Eventi atmosferici.</b> Pioggia e sciami dorati capitano a sorpresa: la pioggia accelera subito i fiori, mentre lo sciame dorato apre una breve finestra da toccare per un bonus di Gocce d'Oro.</p>
     <p><b>🍯 Dispensa.</b> Qui puoi sfogliare tutti i vasetti raccolti, ordinarli e filtrarli per gusto, rarità o condizione.</p>
-    <p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 8 stagioni (circa 2 anni) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>
+    <p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 16 stagioni (circa 4 anni) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>
     <p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti vasetti hai raccolto e quanti ne hai donati ai vicini nelle ultime 4 stagioni, e mostra gli orsetti che hai conosciuto con l'ultimo messaggio di gratitudine che ti hanno lasciato.</p>
   </div>
   <button class="btn secondary" onclick="closeInfo()" id="btnGotIt">HO CAPITO</button>
@@ -680,7 +680,7 @@
         '<p><b>🐻 Ospiti.</b> Un orsetto bussa al giardino e resta 1 minuto chiedendo un vasetto di un gusto specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni orsetto parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un vasetto di rarità superiore) in cambio di una ricompensa molto più generosa.</p>' +
         '<p><b>🌧️ Eventi atmosferici.</b> Pioggia e sciami dorati capitano a sorpresa: la pioggia accelera subito i fiori, mentre lo sciame dorato apre una breve finestra da toccare per un bonus di Gocce d\'Oro.</p>' +
         '<p><b>🍯 Dispensa.</b> Qui puoi sfogliare tutti i vasetti raccolti, ordinarli e filtrarli per gusto, rarità o condizione.</p>' +
-        '<p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 8 stagioni (circa 2 anni) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>' +
+        '<p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 16 stagioni (circa 4 anni) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>' +
         '<p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti vasetti hai raccolto e quanti ne hai donati ai vicini nelle ultime 4 stagioni, e mostra gli orsetti che hai conosciuto con l\'ultimo messaggio di gratitudine che ti hanno lasciato.</p>'
     },
     en: {
@@ -768,7 +768,7 @@
         '<p><b>🐻 Guests.</b> A little bear knocks on the garden and stays for 1 minute asking for a jar of a specific flavor (if you\'re already talking to them when time runs out, you can still hand it over). If you have nothing to give and close with "Maybe Later", they\'ll leave after 5 seconds. Every bear starts as a Stranger and visits more often as their bond grows: Acquaintance after 3 gifts, Friend after 5 more, Dear Friend after 8 more — and their visits become more frequent at each level. At higher levels you may receive a surprise gift on top of the boost, and a Dear Friend sometimes brings a special request (a higher-rarity jar) in exchange for a much bigger reward.</p>' +
         '<p><b>🌧️ Weather events.</b> Rain and golden swarms show up unannounced: rain instantly speeds up your flowers, while the golden swarm opens a brief window you can tap for a Golden Drops bonus.</p>' +
         '<p><b>🍯 Pantry.</b> Here you can browse every jar you\'ve collected, sort them and filter by flavor, rarity or condition.</p>' +
-        '<p><b>🍯 Decay.</b> A jar that\'s neither delivered nor re-combined within 8 seasons (about 2 years) gets given to the neighbors and leaves your collection. Every fusion resets the countdown.</p>' +
+        '<p><b>🍯 Decay.</b> A jar that\'s neither delivered nor re-combined within 16 seasons (about 4 years) gets given to the neighbors and leaves your collection. Every fusion resets the countdown.</p>' +
         '<p><b>📔 Diary.</b> Tells you how many seeds you\'ve planted, how many jars you\'ve harvested, and how many you\'ve given to the neighbors over the last 4 seasons, and shows the bears you\'ve met along with the last thank-you message they left you.</p>'
     }
   };
@@ -928,7 +928,7 @@
     return Math.floor((Date.now() - gameStart) / SEASON_LENGTH);
   }
 
-  var DECAY_SEASONS = 8; // 2 anni di gioco = 8 stagioni
+  var DECAY_SEASONS = 16; // 4 anni di gioco = 16 stagioni
   var lastDecayCheck = Date.now();
 
   function recordSeasonEvent(field, amount) {

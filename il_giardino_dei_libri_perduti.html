@@ -340,7 +340,7 @@
     <p><b>🦉 Ospiti.</b> Un ospite bussa al giardino e resta 1 minuto chiedendo un libro di un genere specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni ospite parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un libro di rarità superiore) in cambio di una ricompensa molto più generosa.</p>
     <p><b>🌧️ Eventi atmosferici.</b> Pioggia e vento capitano a sorpresa: la pioggia accelera subito le piante, mentre il vento apre una breve finestra da toccare per un bonus di valuta.</p>
     <p><b>📚 Libreria.</b> Qui puoi sfogliare tutti i libri raccolti, ordinarli e filtrarli per genere, rarità o condizione.</p>
-    <p><b>📚 Deperimento.</b> Un libro non consegnato o rifuso entro 8 stagioni (circa 2 anni) viene donato alla biblioteca per il restauro e lascia la tua libreria. Ogni fusione resetta il conto alla rovescia.</p>
+    <p><b>📚 Deperimento.</b> Un libro non consegnato o rifuso entro 16 stagioni (circa 4 anni) viene donato alla biblioteca per il restauro e lascia la tua libreria. Ogni fusione resetta il conto alla rovescia.</p>
     <p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti libri hai raccolto e quanti ne hai donati alla biblioteca nelle ultime 4 stagioni, e mostra gli ospiti che hai conosciuto con l'ultimo messaggio di gratitudine che ti hanno lasciato.</p>
   </div>
   <button class="btn secondary" onclick="closeInfo()" id="btnGotIt">HO CAPITO</button>
@@ -659,7 +659,7 @@
         '<p><b>🦉 Ospiti.</b> Un ospite bussa al giardino e resta 1 minuto chiedendo un libro di un genere specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni ospite parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un libro di rarità superiore) in cambio di una ricompensa molto più generosa.</p>' +
         '<p><b>🌧️ Eventi atmosferici.</b> Pioggia e vento capitano a sorpresa: la pioggia accelera subito le piante, mentre il vento apre una breve finestra da toccare per un bonus di valuta.</p>' +
         '<p><b>📚 Libreria.</b> Qui puoi sfogliare tutti i libri raccolti, ordinarli e filtrarli per genere, rarità o condizione.</p>' +
-        '<p><b>📚 Deperimento.</b> Un libro non consegnato o rifuso entro 8 stagioni (circa 2 anni) viene donato alla biblioteca per il restauro e lascia la tua libreria. Ogni fusione resetta il conto alla rovescia.</p>' +
+        '<p><b>📚 Deperimento.</b> Un libro non consegnato o rifuso entro 16 stagioni (circa 4 anni) viene donato alla biblioteca per il restauro e lascia la tua libreria. Ogni fusione resetta il conto alla rovescia.</p>' +
         '<p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti libri hai raccolto e quanti ne hai donati alla biblioteca nelle ultime 4 stagioni, e mostra gli ospiti che hai conosciuto con l\'ultimo messaggio di gratitudine che ti hanno lasciato.</p>'
     },
     en: {
@@ -747,7 +747,7 @@
         '<p><b>🦉 Guests.</b> A guest knocks on the garden and stays for 1 minute asking for a book of a specific genre (if you\'re already talking to them when time runs out, you can still hand it over). If you have nothing to give and close with "Maybe Later", they\'ll leave after 5 seconds. Every guest starts as a Stranger and visits more often as their bond grows: Acquaintance after 3 gifts, Friend after 5 more, Dear Friend after 8 more — and their visits become more frequent at each level. At higher levels you may receive a surprise gift on top of the boost, and a Dear Friend sometimes brings a special request (a higher-rarity book) in exchange for a much bigger reward.</p>' +
         '<p><b>🌧️ Weather events.</b> Rain and wind show up unannounced: rain instantly speeds up your plants, while the wind opens a brief window you can tap for a currency bonus.</p>' +
         '<p><b>📚 Library.</b> Here you can browse every book you\'ve collected, sort them and filter by genre, rarity or condition.</p>' +
-        '<p><b>📚 Decay.</b> A book that\'s neither delivered nor re-fused within 8 seasons (about 2 years) gets donated to the library for restoration and leaves your collection. Every fusion resets the countdown.</p>' +
+        '<p><b>📚 Decay.</b> A book that\'s neither delivered nor re-fused within 16 seasons (about 4 years) gets donated to the library for restoration and leaves your collection. Every fusion resets the countdown.</p>' +
         '<p><b>📔 Diary.</b> Tells you how many seeds you\'ve planted, how many books you\'ve harvested, and how many you\'ve donated to the library over the last 4 seasons, and shows the guests you\'ve met along with the last thank-you message they left you.</p>'
     }
   };
@@ -907,7 +907,7 @@
     return Math.floor((Date.now() - gameStart) / SEASON_LENGTH);
   }
 
-  var DECAY_SEASONS = 8; // 2 anni di gioco = 8 stagioni
+  var DECAY_SEASONS = 16; // 4 anni di gioco = 16 stagioni
   var lastDecayCheck = Date.now();
 
   function recordSeasonEvent(field, amount) {
