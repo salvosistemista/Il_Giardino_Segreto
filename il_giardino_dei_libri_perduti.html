@@ -282,7 +282,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.44</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.45</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -764,7 +764,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.44';
+  var GAME_VERSION = '1.45';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -1297,7 +1297,7 @@
     } else {
       if (now - lastGuestCheck > guestCooldownMs) {
         lastGuestCheck = now;
-        if (Math.random() < 0.5) {
+        if (Math.random() < 0.68) {
           activeGuest = GUEST_POOL[Math.floor(Math.random() * GUEST_POOL.length)];
           activeGuest.spawnedAt = now;
           var relForSpawn = guestRelations[activeGuest.name] || { deliveries: 0, met: false, visits: 0 };
