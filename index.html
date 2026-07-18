@@ -13,7 +13,7 @@
             --btn-books-hover: #724f32;
             --btn-honey-bg: #dca134;
             --btn-honey-hover: #c58f2a;
-            --btn-lang-bg: rgba(255, 255, 255, 0.6);
+            --btn-lang-bg: rgba(255, 255, 255, 0.7);
             --btn-lang-text: #2c3e2e;
         }
 
@@ -26,23 +26,26 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
             text-align: center;
-            position: relative;
+            box-sizing: border-box;
         }
 
-        /* Posizionamento del selettore di lingua */
+        /* Nuovo posizionamento sicuro per lo switch lingua */
         .lang-switch-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+            width: 100%;
+            max-width: 650px;
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px 20px 0 20px;
+            box-sizing: border-box;
         }
 
         .btn-lang {
             background-color: var(--btn-lang-bg);
             color: var(--btn-lang-text);
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.15);
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
             font-family: 'Georgia', serif;
@@ -67,11 +70,12 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            margin: 20px;
+            margin: 10px 20px 30px 20px;
         }
 
         h1 {
             font-size: 2.5rem;
+            margin-top: 0;
             margin-bottom: 2.5rem;
             color: #1e3322;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
@@ -160,11 +164,27 @@
         .icon-right {
             margin-left: 15px;
         }
+
+        /* Ottimizzazioni per schermi molto piccoli */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 1.8rem;
+            }
+            .container {
+                padding: 1.5rem 1rem;
+                margin: 5px 10px 20px 10px;
+            }
+            .btn {
+                padding: 1rem 1.2rem;
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Controlli per il cambio lingua -->
+    <!-- Controlli per il cambio lingua (ora allineati sopra il container principale) -->
     <div class="lang-switch-container">
         <button class="btn-lang" id="lang-toggle" onclick="toggleLanguage()">ENG</button>
     </div>
@@ -178,13 +198,11 @@
                 <a href="il_giardino_del_miele_prezioso.html" class="btn btn-honey">
                     <!-- Icona Vasetto di Miele -->
                     <svg class="icon icon-left" viewBox="0 0 24 24">
-                        <path d="M12,3C10.5,3 8.2,3.3 7,4V6H17V4C15.8,3.3 13.5,3 12,3M6,7V9C6,9.7 6.4,10.2 7,10.5V17A4,4 0 0,0 11,21H13A4,4 0 0,0 17,17V10.5C17.6,10.2 18,9.7 18,9V7H6M12,11A2,2 0 0,1 14,13A2,2 0 0,1 12,15A2,2 0 0,1 10,13A2,2 0 0,1 12,11Z"/>
+                        <path d="M12,3C10.5,3 8.2/3.3 7,4V6H17V4C15.8,3.3 13.5,3 12,3M6,7V9C6,9.7 6.4,10.2 7,10.5V17A4,4 0 0,0 11,21H13A4,4 0 0,0 17,17V10.5C17.6,10.2 18,9.7 18,9V7H6M12,11A2,2 0 0,1 14,13A2,2 0 0,1 12,15A2,2 0 0,1 10,13A2,2 0 0,1 12,11Z"/>
                     </svg>
                     <span id="text-honey">Il giardino del miele prezioso</span>
                 </a>
-                <div class="game-description" id="desc-honey">
-                    <!-- Popolato dinamicamente da JavaScript -->
-                </div>
+                <div class="game-description" id="desc-honey"></div>
             </div>
 
             <!-- Sezione Gioco: Libri -->
@@ -196,15 +214,12 @@
                         <path d="M19,2H14A2,2 0 0,0 12,4H9A2,2 0 0,0 7,2H2V22H7A2,2 0 0,0 9,20H12A2,2 0 0,0 14,22H19V2M12,4V18H9A2,2 0 0,0 7,20H4V4H7A2,2 0 0,0 9,6H12V4M14,4H15A2,2 0 0,0 17,6H20V20H17A2,2 0 0,0 15,18H14V4Z"/>
                     </svg>
                 </a>
-                <div class="game-description" id="desc-books">
-                    <!-- Popolato dinamicamente da JavaScript -->
-                </div>
+                <div class="game-description" id="desc-books"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Mappatura dei testi e delle descrizioni nelle due lingue
         const translations = {
             it: {
                 title: "Il Giardino Segreto",
@@ -226,41 +241,29 @@
             }
         };
 
-        // Recupera la lingua salvata o imposta l'italiano come predefinita
         let currentLang = localStorage.getItem('selectedLanguage') || 'it';
 
         function updateDOM() {
             const data = translations[currentLang];
-            
-            // Aggiorna attributo HTML lang
             document.documentElement.lang = currentLang;
             
-            // Aggiorna i testi principali
             document.getElementById('page-title').textContent = data.title;
             document.getElementById('main-heading').textContent = data.heading;
             document.getElementById('text-honey').textContent = data.honey;
             document.getElementById('text-books').textContent = data.books;
             
-            // Aggiorna le descrizioni strutturate
             document.getElementById('desc-honey').innerHTML = data.honeyDesc;
             document.getElementById('desc-books').innerHTML = data.booksDesc;
             
-            // Aggiorna l'etichetta del pulsante per mostrare la lingua alternativa attivabile
             document.getElementById('lang-toggle').textContent = data.btnLang;
         }
 
         function toggleLanguage() {
-            // Cambia lo stato della lingua attuale
             currentLang = currentLang === 'it' ? 'en' : 'it';
-            
-            // Salva la scelta nel localStorage
             localStorage.setItem('selectedLanguage', currentLang);
-            
-            // Aggiorna l'interfaccia grafica
             updateDOM();
         }
 
-        // Inizializzazione al caricamento della pagina
         document.addEventListener('DOMContentLoaded', updateDOM);
     </script>
 </body>
