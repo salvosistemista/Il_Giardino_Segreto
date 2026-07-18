@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Giardino Segreto</title>
+    <style>
+        :root {
+            --bg-color: #f4ebd9;
+            --text-color: #2c3e2e;
+            --btn-books-bg: #8a6240;
+            --btn-books-hover: #724f32;
+            --btn-honey-bg: #dca134;
+            --btn-honey-hover: #c58f2a;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2.5rem;
+            color: #1e3322;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem 2rem;
+            font-size: 1.25rem;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Bottone Libri */
+        .btn-books {
+            background-color: var(--btn-books-bg);
+        }
+        .btn-books:hover {
+            background-color: var(--btn-books-hover);
+        }
+
+        /* Bottone Miele */
+        .btn-honey {
+            background-color: var(--btn-honey-bg);
+        }
+        .btn-honey:hover {
+            background-color: var(--btn-honey-hover);
+        }
+
+        /* Icone SVG integrate */
+        .icon {
+            width: 32px;
+            height: 32px;
+            fill: currentColor;
+        }
+
+        .icon-left {
+            margin-right: 15px;
+        }
+
+        .icon-right {
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Il Giardino Segreto</h1>
+        
+        <div class="btn-container">
+            <!-- Secondo Tasto: Miele (Icona a SINISTRA) -->
+            <a href="il_giardino_del_miele_prezioso.html" class="btn btn-honey">
+                <!-- Icona Vasetto di Miele -->
+                <svg class="icon icon-left" viewBox="0 0 24 24">
+                    <path d="M12,3C10.5,3 8.2,3.3 7,4V6H17V4C15.8,3.3 13.5,3 12,3M6,7V9C6,9.7 6.4,10.2 7,10.5V17A4,4 0 0,0 11,21H13A4,4 0 0,0 17,17V10.5C17.6,10.2 18,9.7 18,9V7H6M12,11A2,2 0 0,1 14,13A2,2 0 0,1 12,15A2,2 0 0,1 10,13A2,2 0 0,1 12,11Z"/>
+                </svg>
+                Il giardino del miele prezioso
+            </a>
+
+            <!-- Primo Tasto: Libri (Icona a DESTRA) -->
+            <a href="il_giardino_dei_libri_perduti.html" class="btn btn-books">
+                Il giardino dei libri perduti
+                <!-- Icona Libri -->
+                <svg class="icon icon-right" viewBox="0 0 24 24">
+                    <path d="M19,2H14A2,2 0 0,0 12,4H9A2,2 0 0,0 7,2H2V22H7A2,2 0 0,0 9,20H12A2,2 0 0,0 14,22H19V2M12,4V18H9A2,2 0 0,0 7,20H4V4H7A2,2 0 0,0 9,6H12V4M14,4H15A2,2 0 0,0 17,6H20V20H17A2,2 0 0,0 15,18H14V4Z"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
