@@ -182,6 +182,18 @@
     width: 52px; height: 50px; border-radius: 6px 6px 16px 16px; position: relative;
     box-shadow: 1px 2px 4px rgba(0,0,0,0.25), inset -5px 0 7px rgba(0,0,0,0.15), inset 4px 0 6px rgba(255,255,255,0.25);
   }
+  .fusion-sparks {
+    position: absolute; top: 4px; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 4px; pointer-events: none;
+  }
+  .fusion-sparks span {
+    font-size: 9px; line-height: 1; animation: sparkPulse 1.4s ease-in-out infinite;
+    text-shadow: 0 0 3px rgba(0,0,0,0.35);
+  }
+  .fusion-sparks span:nth-child(1) { color: #ffd75e; animation-delay: 0s; }
+  .fusion-sparks span:nth-child(2) { color: #ff9ed8; animation-delay: 0.2s; }
+  .fusion-sparks span:nth-child(3) { color: #8ee0ff; animation-delay: 0.4s; }
+  @keyframes sparkPulse { 0%,100% { opacity: 0.5; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.15); } }
   .jar-label {
     font-size: 0.58rem; color: #445533; text-align: center; margin-top: 5px;
     max-width: 62px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
@@ -282,7 +294,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.46</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.51</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -580,7 +592,7 @@
   function seasonDisplayName(s) { return LANG === 'en' ? s.nameEn : s.name; }
   function seasonDescText(s) { return LANG === 'en' ? s.descEn : s.desc; }
   function seasonFriendlyMsg(s) { return LANG === 'en' ? s.friendlyMsgEn : s.friendlyMsg; }
-  var SEASON_LENGTH = 120000; 
+  var SEASON_LENGTH = 180000; 
 
   // Prezzi dei semi: cambiano ad ogni stagione
   var SEASON_PRICES = {
@@ -672,7 +684,7 @@
       seedMissing: 'Non hai semi di {genre}.',
       seedMissingShop: 'Non hai semi di {genre}. Visita il Vivaio.',
       growthRemaining: '{genre}: ancora {n}s di crescita.',
-      offlineProgress: '🕐 Mentre eri via sono passati {n} min: crescita e rendita aggiornate.',
+      offlineProgress: '🕐 È trascorsa una stagione: crescita e rendita aggiornate.',
       craftBtnText: 'UNISCI 3 VASETTI ({n}/3) • Costo: {cost}',
       pagesWord: 'g',
       passiveGains: '🍯 Genera passivamente: +{income} gocce/s',
@@ -762,7 +774,7 @@
       seedMissing: "You don't have any {genre} seeds.",
       seedMissingShop: "You don't have any {genre} seeds. Visit the Nursery.",
       growthRemaining: '{genre}: still {n}s of growth left.',
-      offlineProgress: "🕐 While you were away, {n} min passed: growth and income updated.",
+      offlineProgress: "🕐 A season has passed: growth and income updated.",
       craftBtnText: 'COMBINE 3 JARS ({n}/3) • Cost: {cost}',
       pagesWord: 'g',
       passiveGains: '🍯 Passively generates: +{income} drops/s',
@@ -786,7 +798,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.46';
+  var GAME_VERSION = '1.51';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -875,10 +887,18 @@
   var currentSort = 'date'; 
   var currentSelectedBook = null;
   var PLOT_COLS = 4, PLOT_ROWS = 4;
-  var lastPassiveTick = Date.now();
+
+  // --- Orologio virtuale di partita ---
+  // vnow() è il "tempo di gioco": scorre come il tempo reale mentre giochi, ma quando riprendi
+  // una partita (Continua) viene fatto avanzare artificialmente di una sola stagione fissa,
+  // indipendentemente da quanto tempo reale sia passato a gioco chiuso/al menu.
+  var timeOffset = 0;
+  function vnow() { return Date.now() + timeOffset; }
+
+  var lastPassiveTick = vnow();
 
   var activeGuest = null;
-  var lastGuestCheck = Date.now();
+  var lastGuestCheck = vnow();
   var growthHasteUntil = 0; 
   var unlockedGenres = { brughiera: false, regale: false }; // una volta sbloccato un gusto resta tale per sempre
   var pendingOfflineMsg = null;
@@ -887,7 +907,7 @@
   // --- Sistemi Meteo Casuali (Fase 6) ---
   var currentWeather = null;      // 'rain' o 'wind'
   var weatherEndAt = 0;           // Timestamp fine evento
-  var lastWeatherCheck = Date.now();
+  var lastWeatherCheck = vnow();
   var particles = [];             // Lista particelle grafiche sul canvas
   var windTarget = null;          // Hitbox QTE per lo Sciame Dorato {x, y, r, active}
   var lastSeasonName = null;      // Per rilevare il cambio di stagione
@@ -939,11 +959,11 @@
   var diaryGuestIndex = 0;
 
   function currentSeasonIndex() {
-    return Math.floor((Date.now() - gameStart) / SEASON_LENGTH);
+    return Math.floor((vnow() - gameStart) / SEASON_LENGTH);
   }
 
-  var DECAY_SEASONS = 16; // 4 anni di gioco = 16 stagioni
-  var lastDecayCheck = Date.now();
+  var DECAY_SEASONS = 12; // 3 anni di gioco = 12 stagioni
+  var lastDecayCheck = vnow();
 
   function recordSeasonEvent(field, amount) {
     amount = amount || 1;
@@ -991,7 +1011,8 @@
   }
 
   function defaultState() {
-    gameStart = Date.now();
+    timeOffset = 0;
+    gameStart = vnow();
     currency = 0;
     seedInventory = {};
     GENRE_KEYS.forEach(function(g){ seedInventory[g] = 0; });
@@ -1018,7 +1039,7 @@
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         gameStart: gameStart, currency: currency, seedInventory: seedInventory, plots: plots, catalog: catalog,
         activeGuest: activeGuest, growthHasteUntil: growthHasteUntil, growthHasteMultiplier: growthHasteMultiplier,
-        unlockedGenres: unlockedGenres, guestRelations: guestRelations, seasonStats: seasonStats, lastActive: Date.now()
+        unlockedGenres: unlockedGenres, guestRelations: guestRelations, seasonStats: seasonStats, savedVirtualNow: vnow()
       }));
     } catch(e) {}
   }
@@ -1060,32 +1081,29 @@
       bubble.style.display = 'flex';
     }
 
-    // --- Avanzamento offline: recupera crescita piante e rendita passiva maturate mentre il gioco era chiuso ---
+    // --- Orologio virtuale: al rientro in partita il tempo di gioco avanza di una sola stagione fissa,
+    // indipendentemente da quanto tempo reale sia passato a gioco chiuso o al menu ---
+    var savedVirtualNow = raw.savedVirtualNow || (Date.now() + timeOffset);
+    timeOffset = savedVirtualNow + SEASON_LENGTH - Date.now();
+
     pendingOfflineMsg = null;
-    var lastActive = raw.lastActive || Date.now();
-    var now = Date.now();
-    var offlineSeconds = Math.max(0, (now - lastActive) / 1000);
+    var jumpSeconds = SEASON_LENGTH / 1000;
 
-    if (offlineSeconds > 5) {
-      // Rendita passiva maturata offline
-      if (catalog.length > 0) {
-        var totalIncomePerSecond = 0;
-        for (var i = 0; i < catalog.length; i++) totalIncomePerSecond += RARITIES[catalog[i].rarity].income;
-        if (totalIncomePerSecond > 0) currency += totalIncomePerSecond * offlineSeconds;
-      }
-
-      // Crescita piante offline, rispettando l'eventuale finestra di haste ancora attiva al momento della chiusura
-      var hasteSecondsRemaining = Math.min(offlineSeconds, Math.max(0, (growthHasteUntil - lastActive) / 1000));
-      var normalSeconds = offlineSeconds - hasteSecondsRemaining;
-      for (var j = 0; j < plots.length; j++) {
-        if (plots[j]) plots[j].progressSeconds += hasteSecondsRemaining * growthHasteMultiplier + normalSeconds * 1.0;
-      }
-
-      if (offlineSeconds > 60) {
-        var mins = Math.floor(offlineSeconds / 60);
-        pendingOfflineMsg = ui('offlineProgress').replace('{n}', mins);
-      }
+    // Rendita passiva maturata durante la stagione trascorsa
+    if (catalog.length > 0) {
+      var totalIncomePerSecond = 0;
+      for (var i = 0; i < catalog.length; i++) totalIncomePerSecond += RARITIES[catalog[i].rarity].income;
+      if (totalIncomePerSecond > 0) currency += totalIncomePerSecond * jumpSeconds;
     }
+
+    // Crescita piante durante la stagione trascorsa, rispettando l'eventuale finestra di haste ancora attiva al momento del salvataggio
+    var hasteSecondsRemaining = Math.min(jumpSeconds, Math.max(0, (growthHasteUntil - savedVirtualNow) / 1000));
+    var normalSeconds = jumpSeconds - hasteSecondsRemaining;
+    for (var j = 0; j < plots.length; j++) {
+      if (plots[j]) plots[j].progressSeconds += hasteSecondsRemaining * growthHasteMultiplier + normalSeconds * 1.0;
+    }
+
+    pendingOfflineMsg = ui('offlineProgress');
   }
 
   var plotSize, plotGap = 14, gridOffX, gridOffY;
@@ -1121,7 +1139,7 @@
   }
 
   function currentSeason() {
-    var idx = Math.floor(((Date.now()-gameStart) % (SEASON_LENGTH*4)) / SEASON_LENGTH);
+    var idx = Math.floor(((vnow()-gameStart) % (SEASON_LENGTH*4)) / SEASON_LENGTH);
     return SEASONS[idx];
   }
 
@@ -1159,8 +1177,8 @@
 
   function updateHUD() {
     var hasteText = "";
-    if (Date.now() < growthHasteUntil) {
-      var remainingHaste = Math.ceil((growthHasteUntil - Date.now()) / 1000);
+    if (vnow() < growthHasteUntil) {
+      var remainingHaste = Math.ceil((growthHasteUntil - vnow()) / 1000);
       hasteText = ui('hasteSuffix').replace('{mult}', growthHasteMultiplier).replace('{n}', remainingHaste);
     }
     document.getElementById('currencyTopDisplay').textContent = ui('currencyName') + ": " + Math.floor(currency) + hasteText;
@@ -1209,7 +1227,7 @@
 
   // --- Gestione Particelle Ambientali (Fase 6) ---
   function updateAndDrawParticles() {
-    var now = Date.now();
+    var now = vnow();
     if (currentWeather && now > weatherEndAt) {
       currentWeather = null;
       windTarget = null;
@@ -1272,7 +1290,7 @@
 
   // ---------- ciclo principale logiche di gioco ----------
   function processGameTimers() {
-    var now = Date.now();
+    var now = vnow();
     var delta = (now - lastPassiveTick) / 1000;
     lastPassiveTick = now;
 
@@ -1387,10 +1405,10 @@
     document.getElementById('seedBar').style.visibility = 'hidden';
     document.getElementById('introOverlay').style.display = 'flex';
     state = 'intro';
-    lastPassiveTick = Date.now();
-    lastGuestCheck = Date.now();
-    lastWeatherCheck = Date.now();
-    lastDecayCheck = Date.now();
+    lastPassiveTick = vnow();
+    lastGuestCheck = vnow();
+    lastWeatherCheck = vnow();
+    lastDecayCheck = vnow();
     layoutPlots();
     updateHUD();
 
@@ -1398,7 +1416,7 @@
     particles = [];
     windTarget = null;
     currentWeather = 'wind';
-    weatherEndAt = Date.now() + 10000;
+    weatherEndAt = vnow() + 10000;
 
     setTimeout(function() {
       currentWeather = null;
@@ -1412,7 +1430,7 @@
       document.getElementById('seedBar').style.visibility = '';
 
       state = 'garden';
-      lastWeatherCheck = Date.now(); // evita che un nuovo evento meteo scatti subito dopo
+      lastWeatherCheck = vnow(); // evita che un nuovo evento meteo scatti subito dopo
       updateHUD();
       saveGame();
     }, 10000);
@@ -1440,10 +1458,10 @@
     loadGame();
     document.getElementById('startScreen').classList.add('hidden');
     state = 'garden';
-    lastPassiveTick = Date.now();
-    lastGuestCheck = Date.now();
-    lastWeatherCheck = Date.now();
-    lastDecayCheck = Date.now();
+    lastPassiveTick = vnow();
+    lastGuestCheck = vnow();
+    lastWeatherCheck = vnow();
+    lastDecayCheck = vnow();
     layoutPlots();
     updateHUD();
     if (pendingOfflineMsg) { showToast(pendingOfflineMsg); pendingOfflineMsg = null; }
@@ -1592,7 +1610,7 @@
     if (!plot) {
       var def = GENRES[selectedGenre];
       if (seedInventory[selectedGenre] <= 0) { showToast(ui('seedMissing').replace('{genre}', genreName(selectedGenre))); sfxBlocked(); return; }
-      plots[idx] = { genre: selectedGenre, plantedAt: Date.now(), progressSeconds: 0 };
+      plots[idx] = { genre: selectedGenre, plantedAt: vnow(), progressSeconds: 0 };
       seedInventory[selectedGenre]--;
       recordSeasonEvent('planted');
       sfxPlant();
@@ -1633,6 +1651,20 @@
     ensureAudio(); handleTap(e.clientX, e.clientY);
   });
 
+  // Vero se esistono almeno 3 copie identiche (titolo+gusto+rarità+condizione) e la rarità non è già al massimo
+  function isFusable(book) {
+    if (book.rarity >= 3) return false;
+    var n = 0;
+    for (var i = 0; i < catalog.length; i++) {
+      var b = catalog[i];
+      if (b.title === book.title && b.genre === book.genre && b.rarity === book.rarity && b.condition === book.condition) {
+        n++;
+        if (n >= 3) return true;
+      }
+    }
+    return false;
+  }
+
   function generateBook(genre) {
     var tw = TITLE_WORDS[LANG][genre];
     var pre = tw.pre[Math.floor(Math.random()*tw.pre.length)];
@@ -1640,13 +1672,13 @@
     var title = pre + ' ' + noun;
     var blurb = BLURBS[LANG][genre][Math.floor(Math.random()*BLURBS[LANG][genre].length)];
     
-    var uniqueId = 'bk_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+    var uniqueId = 'bk_' + vnow() + '_' + Math.floor(Math.random()*10000);
     var randomPages = Math.floor(Math.random() * 250) + 45; 
     var randomCondition = BOOK_CONDITIONS[LANG][Math.floor(Math.random() * BOOK_CONDITIONS[LANG].length)];
 
     return { 
       id: uniqueId, genre: genre, title: title, blurb: blurb, rarity: 0, 
-      pages: randomPages, condition: randomCondition, harvestedAt: Date.now() 
+      pages: randomPages, condition: randomCondition, harvestedAt: vnow() 
     };
   }
 
@@ -1715,10 +1747,10 @@
     currency -= nextRarityDef.cost;
     
     var upgradedBook = {
-      id: 'bk_' + Date.now() + '_' + Math.floor(Math.random()*10000),
+      id: 'bk_' + vnow() + '_' + Math.floor(Math.random()*10000),
       genre: book.genre, title: rarityPrefix(nextRarity) + book.title, 
       blurb: FUSING_BLURBS[LANG][Math.floor(Math.random() * FUSING_BLURBS[LANG].length)],
-      rarity: nextRarity, pages: book.pages + 60, condition: ui('boundMasterpiece'), harvestedAt: Date.now()
+      rarity: nextRarity, pages: book.pages + 60, condition: ui('boundMasterpiece'), harvestedAt: vnow()
     };
     
     catalog.push(upgradedBook);
@@ -1830,12 +1862,12 @@
 
     if (wasSpecial) {
       growthHasteMultiplier = 3.0;
-      growthHasteUntil = Date.now() + 90000;
+      growthHasteUntil = vnow() + 90000;
       showToast(gratitudeMsg + ' ' + ui('speedTripled'));
     } else {
       var hasteSeconds = GUEST_TIER_HASTE_SECONDS[tierBefore];
       growthHasteMultiplier = 2.0;
-      growthHasteUntil = Date.now() + hasteSeconds * 1000;
+      growthHasteUntil = vnow() + hasteSeconds * 1000;
       showToast(gratitudeMsg + ' ' + ui('speedDoubled').replace('{n}', hasteSeconds));
     }
 
@@ -2065,6 +2097,13 @@
         var jarBody = document.createElement('div');
         jarBody.className = 'jar-body rarity-' + book.rarity;
         jarBody.style.backgroundColor = def.color;
+
+        if (isFusable(book)) {
+          var sparks = document.createElement('div');
+          sparks.className = 'fusion-sparks';
+          sparks.innerHTML = '<span>✦</span><span>✦</span><span>✦</span>';
+          jarBody.appendChild(sparks);
+        }
 
         var label = document.createElement('div');
         label.className = 'jar-label';
