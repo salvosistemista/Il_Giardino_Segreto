@@ -45,18 +45,19 @@
   #toast.show { opacity: 1; }
 
   #seedBar {
-    position: fixed; bottom: max(112px, calc(env(safe-area-inset-bottom) + 102px));
+    position: fixed; bottom: max(96px, calc(env(safe-area-inset-bottom) + 86px));
     left: 50%; transform: translateX(-50%);
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; z-index: 6;
-    width: max-content; max-width: calc(100vw - 20px);
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; z-index: 6;
+    max-width: 300px;
   }
   .seedChip {
     background: rgba(255,255,255,0.55); border: 2px solid transparent;
     border-radius: 10px; padding: 6px 10px; font-size: 0.72rem; color: #445533;
-    display: flex; flex-direction: column; align-items: center; min-width: 56px;
+    display: flex; flex-direction: column; align-items: center; min-width: 56px; gap: 2px;
   }
   .seedChip.selected { border-color: #445533; background: rgba(255,255,255,0.85); }
-  .seedChip .dot { width: 16px; height: 16px; border-radius: 50%; margin-bottom: 3px; }
+  .seedChip .seedTop { display: flex; align-items: center; gap: 4px; }
+  .seedChip .dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
 
   #bottomBar {
     position: fixed; bottom: max(16px, env(safe-area-inset-bottom)); left: 0; right: 0;
@@ -280,7 +281,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.42</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.43</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -784,7 +785,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.42';
+  var GAME_VERSION = '1.43';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -1088,7 +1089,7 @@
 
   var plotSize, plotGap = 14, gridOffX, gridOffY;
   function layoutPlots() {
-    var maxW = W - 40, maxH = H - 300;
+    var maxW = W - 40, maxH = H - 280;
     var sizeW = (maxW - plotGap*(PLOT_COLS-1)) / PLOT_COLS;
     var sizeH = (maxH - plotGap*(PLOT_ROWS-1)) / PLOT_ROWS;
     plotSize = Math.min(90, sizeW, sizeH);
@@ -1191,9 +1192,9 @@
       var unlocked = isGenreUnlocked(g);
       if(!unlocked && count <= 0) {
         chip.style.opacity = '0.3';
-        chip.innerHTML = '<div class="dot" style="background:#444"></div>🔒 ' + ui('lockedBtn');
+        chip.innerHTML = '<div class="seedTop"><div class="dot" style="background:#444"></div>🔒</div>' + ui('lockedBtn');
       } else {
-        chip.innerHTML = '<div class="dot" style="background:' + def.color + '"></div>' + genreName(g) + '<br>' + count;
+        chip.innerHTML = '<div class="seedTop"><div class="dot" style="background:' + def.color + '"></div><span>' + count + '</span></div>' + genreName(g);
         chip.onclick = function() {
           if (count <= 0) { showToast(ui('seedMissingShop').replace('{genre}', genreName(g))); return; }
           selectedGenre = g;
