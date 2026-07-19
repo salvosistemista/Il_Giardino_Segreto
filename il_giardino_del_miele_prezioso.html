@@ -208,6 +208,8 @@
     text-shadow: 0 0 3px rgba(0,0,0,0.35);
   }
   .fusion-sparks.many span { font-size: 7px; }
+  .fusion-sparks-inline { display: flex; justify-content: center; gap: 6px; margin: 6px 0; }
+  .fusion-sparks-inline span { font-size: 17px; animation: sparkPulse 1.4s ease-in-out infinite; text-shadow: 0 0 4px rgba(0,0,0,0.25); }
   @keyframes sparkPulse { 0%,100% { opacity: 0.5; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.15); } }
   .jar-label {
     font-size: 0.58rem; color: #445533; text-align: center; margin-top: 5px;
@@ -314,7 +316,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.61</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.62</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -340,7 +342,7 @@
     <div class="filter-selects">
       <select id="sel-genre" onchange="renderCatalog()"><option value="all" id="optAllGenres">Tutti i Gusti</option></select>
       <select id="sel-rarity" onchange="renderCatalog()"><option value="all" id="optAllRarities">Tutte le Rarità</option></select>
-      <select id="sel-condition" onchange="renderCatalog()"><option value="all" id="optAllConditions">Tutte le Condizioni</option></select>
+      <select id="sel-fusion" onchange="renderCatalog()"><option value="all" id="optAllFusion">Tutto</option></select>
     </div>
   </div>
 
@@ -355,6 +357,8 @@
   <div class="bookSpecs" id="bookRevealSpecs"></div>
   <div id="bookPassiveGains"></div>
   <p id="bookRevealText"></p>
+  <div id="bookRevealCurrency" style="font-size:0.85rem; color:#566b3a; margin-top:6px;"></div>
+  <div id="bookRevealFusionHint"></div>
   <button class="btn craft hidden" id="craftBtn" onclick="triggerFusing()">UNISCI 3 VASETTI UGUALI</button>
   <button class="btn" onclick="closeBookReveal()" id="btnPutBack">RIPONI IN DISPENSA</button>
 </div>
@@ -377,7 +381,7 @@
     <p><b>🍂 Stagioni.</b> Il tempo scorre in cicli di Primavera, Estate, Autunno e Inverno, ognuna con un bonus diverso su crescita o guadagni.</p>
     <p><b>🐻 Ospiti.</b> Un orsetto bussa al giardino e resta 1 minuto chiedendo un vasetto di un gusto specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni orsetto parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un vasetto di rarità superiore) in cambio di una ricompensa molto più generosa.</p>
     <p><b>🌧️ Eventi atmosferici.</b> Pioggia e sciami dorati capitano a sorpresa: la pioggia accelera subito i fiori, mentre lo sciame dorato apre una breve finestra da toccare per un bonus di Gocce d'Oro.</p>
-    <p><b>🍯 Dispensa.</b> Qui puoi sfogliare tutti i vasetti raccolti, ordinarli e filtrarli per gusto, rarità o condizione.</p>
+    <p><b>🍯 Dispensa.</b> Qui puoi sfogliare tutti i vasetti raccolti, ordinarli e filtrarli per gusto, rarità o possibilità di fusione.</p>
     <p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 16 stagioni (circa 4 anni) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>
     <p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti vasetti hai raccolto e quanti ne hai donati ai vicini nelle ultime 4 stagioni, e mostra gli orsetti che hai conosciuto con l'ultimo messaggio di gratitudine che ti hanno lasciato.</p>
   </div>
@@ -668,7 +672,9 @@
       sortRarity: 'Per Rarità',
       optAllGenres: 'Tutti i Gusti',
       optAllRarities: 'Tutte le Rarità',
-      optAllConditions: 'Tutte le Condizioni',
+      optAllFusion: 'Tutto',
+      optFusion1: 'Fusione ×1',
+      optFusion2: 'Fusione ×2',
       btnPutBack: 'RIPONI IN DISPENSA',
       orderDefaultTitle: 'Un Orsetto in Visita',
       orderDefaultText: "L'Orsetto Goloso cerca un vasetto di miele...",
@@ -725,7 +731,7 @@
         '<p><b>🍂 Stagioni.</b> Ogni stagione dura 3 minuti e il tempo scorre in cicli di Primavera, Estate, Autunno e Inverno, ognuna con un bonus diverso su crescita o guadagni. Se chiudi il gioco o torni al menu, al rientro sarà passata esattamente un\'altra stagione, non di più.</p>' +
         '<p><b>🐻 Ospiti.</b> Un orsetto bussa al giardino e resta 1 minuto chiedendo un vasetto di un gusto specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni orsetto parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un vasetto di rarità superiore) in cambio di una ricompensa molto più generosa.</p>' +
         '<p><b>🌧️ Eventi atmosferici.</b> Pioggia e sciami dorati capitano a sorpresa: la pioggia accelera subito i fiori, mentre lo sciame dorato apre una breve finestra da toccare per un bonus di Gocce d\'Oro.</p>' +
-        '<p><b>🍯 Dispensa.</b> Qui puoi sfogliare tutti i vasetti raccolti, ordinarli e filtrarli per gusto, rarità o condizione.</p>' +
+        '<p><b>🍯 Dispensa.</b> Qui puoi sfogliare tutti i vasetti raccolti, ordinarli e filtrarli per gusto, rarità o possibilità di fusione.</p>' +
         '<p><b>🍯 Deperimento.</b> Un vasetto non consegnato o rifuso entro 20 stagioni di gioco effettivamente giocato (circa un\'ora, non conta il tempo a gioco chiuso) viene donato ai vicini di casa e lascia la tua dispensa. Ogni fusione resetta il conto alla rovescia.</p>' +
         '<p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti vasetti hai raccolto e quanti ne hai donati ai vicini nelle ultime 4 stagioni, e mostra gli orsetti che hai conosciuto — con le visite ricevute e l\'ultimo messaggio di gratitudine che ti hanno lasciato.</p>'
     },
@@ -762,7 +768,9 @@
       sortRarity: 'By Rarity',
       optAllGenres: 'All Flavors',
       optAllRarities: 'All Rarities',
-      optAllConditions: 'All Conditions',
+      optAllFusion: 'All',
+      optFusion1: 'Fusion ×1',
+      optFusion2: 'Fusion ×2',
       btnPutBack: 'PUT BACK IN THE PANTRY',
       orderDefaultTitle: 'A Little Bear Visiting',
       orderDefaultText: 'The Greedy Little Bear is looking for a jar of honey...',
@@ -819,7 +827,7 @@
         '<p><b>🍂 Seasons.</b> Each season lasts 3 minutes, flowing in cycles of Spring, Summer, Autumn and Winter, each with a different bonus to growth or earnings. If you close the game or go back to the menu, exactly one more season will have passed when you return — never more.</p>' +
         '<p><b>🐻 Guests.</b> A little bear knocks on the garden and stays for 1 minute asking for a jar of a specific flavor (if you\'re already talking to them when time runs out, you can still hand it over). If you have nothing to give and close with "Maybe Later", they\'ll leave after 5 seconds. Every bear starts as a Stranger and visits more often as their bond grows: Acquaintance after 3 gifts, Friend after 5 more, Dear Friend after 8 more — and their visits become more frequent at each level. At higher levels you may receive a surprise gift on top of the boost, and a Dear Friend sometimes brings a special request (a higher-rarity jar) in exchange for a much bigger reward.</p>' +
         '<p><b>🌧️ Weather events.</b> Rain and golden swarms show up unannounced: rain instantly speeds up your flowers, while the golden swarm opens a brief window you can tap for a Golden Drops bonus.</p>' +
-        '<p><b>🍯 Pantry.</b> Here you can browse every jar you\'ve collected, sort them and filter by flavor, rarity or condition.</p>' +
+        '<p><b>🍯 Pantry.</b> Here you can browse every jar you\'ve collected, sort them and filter by flavor, rarity or fusion potential.</p>' +
         '<p><b>🍯 Decay.</b> A jar that\'s neither delivered nor re-combined within 20 seasons of actual play time (about an hour of real playing — time spent with the game closed doesn\'t count) gets given to the neighbors and leaves your collection. Every fusion resets the countdown.</p>' +
         '<p><b>📔 Diary.</b> Tells you how many seeds you\'ve planted, how many jars you\'ve harvested, and how many you\'ve given to the neighbors over the last 4 seasons, and shows the bears you\'ve met — including how many times they\'ve visited and the last thank-you message they left you.</p>'
     }
@@ -827,7 +835,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.61';
+  var GAME_VERSION = '1.62';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -895,7 +903,7 @@
     document.getElementById('f-rarity').textContent = ui('sortRarity');
     document.getElementById('optAllGenres').textContent = ui('optAllGenres');
     document.getElementById('optAllRarities').textContent = ui('optAllRarities');
-    document.getElementById('optAllConditions').textContent = ui('optAllConditions');
+    document.getElementById('optAllFusion').textContent = ui('optAllFusion');
     document.getElementById('btnCatalogClose').textContent = ui('continueBtn');
     document.getElementById('btnPutBack').textContent = ui('btnPutBack');
     document.getElementById('orderGuestTitle').textContent = ui('orderDefaultTitle');
@@ -1766,6 +1774,15 @@
     return '<div class="fusion-sparks' + (count >= 5 ? ' many' : '') + '">' + inner + '</div>';
   }
 
+  function sparklesInlineHtml(count) {
+    if (count <= 0) return '';
+    var inner = '';
+    for (var i = 0; i < count; i++) {
+      inner += '<span style="color:' + SPARK_COLORS[i % SPARK_COLORS.length] + '; animation-delay:' + (i * 0.15) + 's;">✦</span>';
+    }
+    return '<div class="fusion-sparks-inline">' + inner + '</div>';
+  }
+
   function generateBook(genre) {
     var tw = TITLE_WORDS[LANG][genre];
     var pre = tw.pre[Math.floor(Math.random()*tw.pre.length)];
@@ -1802,6 +1819,8 @@
     } else { passiveEl.style.display = 'none'; }
     
     document.getElementById('bookRevealText').textContent = book.blurb;
+    document.getElementById('bookRevealCurrency').textContent = '🍯 ' + Math.floor(currency) + ' ' + ui('currencyName');
+    document.getElementById('bookRevealFusionHint').innerHTML = sparklesInlineHtml(sparkleCount(book));
     
     var craftBtn = document.getElementById('craftBtn');
     if (book.rarity < 3) {
@@ -2096,11 +2115,11 @@
   function populateCatalogFilters() {
     var selGenre = document.getElementById('sel-genre');
     var selRarity = document.getElementById('sel-rarity');
-    var selCondition = document.getElementById('sel-condition');
+    var selFusion = document.getElementById('sel-fusion');
 
     var prevGenre = selGenre.value;
     var prevRarity = selRarity.value;
-    var prevCondition = selCondition.value;
+    var prevFusion = selFusion.value;
 
     // Gusti presenti in dispensa, nell'ordine di GENRE_KEYS
     var genresPresent = GENRE_KEYS.filter(function(g) {
@@ -2121,20 +2140,15 @@
         return '<option value="' + idx + '">' + rarityName(idx) + '</option>';
       }).join('');
 
-    // Condizioni presenti (dedotte direttamente dal catalogo, per restare valide anche se contiene testi in lingue diverse)
-    var conditionsPresent = [];
-    catalog.forEach(function(b) {
-      if (conditionsPresent.indexOf(b.condition) === -1) conditionsPresent.push(b.condition);
-    });
-    selCondition.innerHTML = '<option value="all">' + ui('optAllConditions') + '</option>' +
-      conditionsPresent.map(function(c) {
-        return '<option value="' + c + '">' + c + '</option>';
-      }).join('');
+    // Filtro Fusione: opzioni fisse (non dipendono dal catalogo)
+    selFusion.innerHTML = '<option value="all">' + ui('optAllFusion') + '</option>' +
+      '<option value="1">' + ui('optFusion1') + '</option>' +
+      '<option value="2">' + ui('optFusion2') + '</option>';
 
     // Ripristina la selezione precedente se ancora valida, altrimenti torna su "Tutti/e"
     selGenre.value = (genresPresent.indexOf(prevGenre) !== -1) ? prevGenre : 'all';
     selRarity.value = (raritiesPresent.indexOf(parseInt(prevRarity,10)) !== -1) ? prevRarity : 'all';
-    selCondition.value = (conditionsPresent.indexOf(prevCondition) !== -1) ? prevCondition : 'all';
+    selFusion.value = (['all','1','2'].indexOf(prevFusion) !== -1) ? prevFusion : 'all';
   }
 
   window.renderCatalog = function renderCatalog() {
@@ -2157,13 +2171,14 @@
     // 1. Acquisizione valori dei menu a tendina
     var filterGenre = document.getElementById('sel-genre').value;
     var filterRarity = document.getElementById('sel-rarity').value;
-    var filterCondition = document.getElementById('sel-condition').value;
+    var filterFusion = document.getElementById('sel-fusion').value;
 
     // 2. Filtraggio combinato dei dati
     var filtered = catalog.slice().filter(function(book) {
       if (filterGenre !== 'all' && book.genre !== filterGenre) return false;
       if (filterRarity !== 'all' && book.rarity.toString() !== filterRarity) return false;
-      if (filterCondition !== 'all' && book.condition !== filterCondition) return false;
+      if (filterFusion === '1' && sparkleCount(book) !== 3) return false;
+      if (filterFusion === '2' && sparkleCount(book) !== 5) return false;
       return true;
     });
 
