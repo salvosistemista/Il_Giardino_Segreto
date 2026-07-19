@@ -315,7 +315,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.55</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.56</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -707,6 +707,7 @@
       seedMissingShop: 'Non hai semi di {genre}. Visita il Vivaio.',
       growthRemaining: '{genre}: ancora {n}s di crescita.',
       offlineProgress: '🕐 È trascorsa una stagione: crescita e rendita aggiornate.',
+      offlineProgressMinutes: '🕐 Mentre eri via sono passati {n} min: crescita e rendita aggiornate.',
       craftBtnText: 'UNISCI 3 VASETTI ({n}/3) • Costo: {cost}',
       pagesWord: 'g',
       passiveGains: '🍯 Genera passivamente: +{income} gocce/s',
@@ -800,6 +801,7 @@
       seedMissingShop: "You don't have any {genre} seeds. Visit the Nursery.",
       growthRemaining: '{genre}: still {n}s of growth left.',
       offlineProgress: "🕐 A season has passed: growth and income updated.",
+      offlineProgressMinutes: "🕐 While you were away, {n} min passed: growth and income updated.",
       craftBtnText: 'COMBINE 3 JARS ({n}/3) • Cost: {cost}',
       pagesWord: 'g',
       passiveGains: '🍯 Passively generates: +{income} drops/s',
@@ -826,7 +828,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.55';
+  var GAME_VERSION = '1.56';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -1067,7 +1069,8 @@
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         gameStart: gameStart, currency: currency, seedInventory: seedInventory, plots: plots, catalog: catalog,
         activeGuest: activeGuest, growthHasteUntil: growthHasteUntil, growthHasteMultiplier: growthHasteMultiplier,
-        unlockedGenres: unlockedGenres, guestRelations: guestRelations, seasonStats: seasonStats, savedVirtualNow: vnow()
+        unlockedGenres: unlockedGenres, guestRelations: guestRelations, seasonStats: seasonStats,
+        timeOffset: timeOffset, savedRealNow: Date.now()
       }));
     } catch(e) {}
   }
@@ -1109,29 +1112,46 @@
       bubble.style.display = 'flex';
     }
 
-    // --- Orologio virtuale: al rientro in partita il tempo di gioco avanza di una sola stagione fissa,
-    // indipendentemente da quanto tempo reale sia passato a gioco chiuso o al menu ---
-    var savedVirtualNow = raw.savedVirtualNow || (Date.now() + timeOffset);
-    timeOffset = savedVirtualNow + SEASON_LENGTH - Date.now();
+    // --- Orologio virtuale ---
+    // Se rientri entro 5 minuti reali, il tempo di gioco scorre esattamente come il tempo reale trascorso
+    // (comportamento naturale). Se sei stato via più a lungo, la stagione avanza comunque di un solo passo fisso,
+    // per evitare salti enormi ma anche per non "congelare" nulla se rientri quasi subito.
+    var savedRealNow = raw.savedRealNow || Date.now();
+    var savedOffset = (raw.timeOffset !== undefined) ? raw.timeOffset : timeOffset;
+    var vnowAtSave = savedRealNow + savedOffset;
+    var realElapsedMs = Math.max(0, Date.now() - savedRealNow);
+    var SHORT_GAP_LIMIT_MS = 5 * 60 * 1000; // 5 minuti reali
 
     pendingOfflineMsg = null;
-    var jumpSeconds = SEASON_LENGTH / 1000;
+    var catchUpSeconds;
 
-    // Rendita passiva maturata durante la stagione trascorsa
+    if (realElapsedMs <= SHORT_GAP_LIMIT_MS) {
+      // Rientro rapido: l'orologio virtuale resta invariato, il tempo scorre come nella realtà
+      timeOffset = savedOffset;
+      catchUpSeconds = realElapsedMs / 1000;
+      if (realElapsedMs > 60000) {
+        pendingOfflineMsg = ui('offlineProgressMinutes').replace('{n}', Math.floor(realElapsedMs / 60000));
+      }
+    } else {
+      // Assenza lunga: la stagione avanza comunque di un solo passo fisso
+      timeOffset = vnowAtSave + SEASON_LENGTH - Date.now();
+      catchUpSeconds = SEASON_LENGTH / 1000;
+      pendingOfflineMsg = ui('offlineProgress');
+    }
+
+    // Rendita passiva maturata nel frattempo
     if (catalog.length > 0) {
       var totalIncomePerSecond = 0;
       for (var i = 0; i < catalog.length; i++) totalIncomePerSecond += RARITIES[catalog[i].rarity].income;
-      if (totalIncomePerSecond > 0) currency += totalIncomePerSecond * jumpSeconds;
+      if (totalIncomePerSecond > 0) currency += totalIncomePerSecond * catchUpSeconds;
     }
 
-    // Crescita piante durante la stagione trascorsa, rispettando l'eventuale finestra di haste ancora attiva al momento del salvataggio
-    var hasteSecondsRemaining = Math.min(jumpSeconds, Math.max(0, (growthHasteUntil - savedVirtualNow) / 1000));
-    var normalSeconds = jumpSeconds - hasteSecondsRemaining;
+    // Crescita piante nel frattempo, rispettando l'eventuale finestra di haste ancora attiva al momento del salvataggio
+    var hasteSecondsRemaining = Math.min(catchUpSeconds, Math.max(0, (growthHasteUntil - vnowAtSave) / 1000));
+    var normalSeconds = catchUpSeconds - hasteSecondsRemaining;
     for (var j = 0; j < plots.length; j++) {
       if (plots[j]) plots[j].progressSeconds += hasteSecondsRemaining * growthHasteMultiplier + normalSeconds * 1.0;
     }
-
-    pendingOfflineMsg = ui('offlineProgress');
   }
 
   var plotSize, plotGap = 14, gridOffX, gridOffY;
