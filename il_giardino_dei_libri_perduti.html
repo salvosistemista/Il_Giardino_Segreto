@@ -201,13 +201,12 @@
     position: absolute; top: 4px; left: 0; right: 0;
     display: flex; justify-content: center; gap: 3px; pointer-events: none;
   }
+  .fusion-sparks.many { gap: 1.5px; }
   .fusion-sparks span {
     font-size: 8px; line-height: 1; animation: sparkPulse 1.4s ease-in-out infinite;
     text-shadow: 0 0 3px rgba(0,0,0,0.35);
   }
-  .fusion-sparks span:nth-child(1) { color: #ffd75e; animation-delay: 0s; }
-  .fusion-sparks span:nth-child(2) { color: #ff9ed8; animation-delay: 0.2s; }
-  .fusion-sparks span:nth-child(3) { color: #8ee0ff; animation-delay: 0.4s; }
+  .fusion-sparks.many span { font-size: 6.5px; }
   @keyframes sparkPulse { 0%,100% { opacity: 0.5; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.15); } }
   .book-title-vertical {
     writing-mode: vertical-rl; text-transform: uppercase;
@@ -316,7 +315,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.60</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.61</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -659,7 +658,7 @@
       diaryTitle: 'DIARIO',
       diaryKnownGuests: 'Ospiti conosciuti',
       btnDiaryClose: 'CHIUDI',
-      introPhrase: 'Il vento non viaggia mai solo...',
+      introPhrase: 'Il vento non viaggia mai solo... preparati a raccogliere i suoi doni',
       currencyName: 'Polvere di Pagine',
       noMatchFilters: 'Nessun libro corrisponde ai filtri selezionati.',
       lockedBtn: 'Bloccato',
@@ -753,7 +752,7 @@
       diaryTitle: 'DIARY',
       diaryKnownGuests: "Guests you've met",
       btnDiaryClose: 'CLOSE',
-      introPhrase: 'The wind never travels alone...',
+      introPhrase: 'The wind never travels alone... get ready to gather its gifts',
       currencyName: 'Page Dust',
       noMatchFilters: 'No book matches the selected filters.',
       lockedBtn: 'Locked',
@@ -807,7 +806,7 @@
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.60';
+  var GAME_VERSION = '1.61';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -1454,28 +1453,34 @@
     layoutPlots();
     updateHUD();
 
-    // Sequenza d'apertura: forza l'evento "Vento di Idee" per 10 secondi
+    // Sequenza d'apertura: la frase resta visibile 3 secondi, poi sparisce e solo allora
+    // scatta l'evento "Vento di Idee" per altri 10 secondi
     particles = [];
     windTarget = null;
-    currentWeather = 'wind';
-    weatherEndAt = vnow() + 10000;
 
     setTimeout(function() {
-      currentWeather = null;
-      windTarget = null;
-      particles = [];
-      if (currency < 16) currency = 16; // garantisce sempre una base minima per partire
+      document.getElementById('introPhrase').textContent = '';
 
-      document.getElementById('introOverlay').style.display = 'none';
-      document.getElementById('topBar').style.visibility = '';
-      document.getElementById('bottomBar').style.visibility = '';
-      document.getElementById('seedBar').style.visibility = '';
+      currentWeather = 'wind';
+      weatherEndAt = vnow() + 10000;
 
-      state = 'garden';
-      lastWeatherCheck = vnow(); // evita che un nuovo evento meteo scatti subito dopo
-      updateHUD();
-      saveGame();
-    }, 10000);
+      setTimeout(function() {
+        currentWeather = null;
+        windTarget = null;
+        particles = [];
+        if (currency < 16) currency = 16; // garantisce sempre una base minima per partire
+
+        document.getElementById('introOverlay').style.display = 'none';
+        document.getElementById('topBar').style.visibility = '';
+        document.getElementById('bottomBar').style.visibility = '';
+        document.getElementById('seedBar').style.visibility = '';
+
+        state = 'garden';
+        lastWeatherCheck = vnow(); // evita che un nuovo evento meteo scatti subito dopo
+        updateHUD();
+        saveGame();
+      }, 10000);
+    }, 3000);
   }
 
   window.startNewGame = function() {
@@ -1716,6 +1721,31 @@
       }
     }
     return false;
+  }
+
+  // 0 = non fondibile ora; 3 = fondibile; 5 = fondibile E il libro risultante avrebbe già
+  // almeno 2 "fratelli" pronti allo stesso livello, quindi potrebbe subito fondersi di nuovo
+  function sparkleCount(book) {
+    if (!isFusable(book)) return 0;
+    var nextRarity = book.rarity + 1;
+    if (nextRarity >= 3) return 3; // non c'è un livello ulteriore oltre a questo
+    var resultTitle = rarityPrefix(nextRarity) + book.title;
+    var existingAtNext = 0;
+    for (var i = 0; i < catalog.length; i++) {
+      var b = catalog[i];
+      if (b.title === resultTitle && b.genre === book.genre && b.rarity === nextRarity) existingAtNext++;
+    }
+    return (existingAtNext >= 2) ? 5 : 3;
+  }
+
+  var SPARK_COLORS = ['#ffd75e', '#ff9ed8', '#8ee0ff', '#a0ffb0', '#ffb37a'];
+  function sparklesHtml(count) {
+    if (count <= 0) return '';
+    var inner = '';
+    for (var i = 0; i < count; i++) {
+      inner += '<span style="color:' + SPARK_COLORS[i % SPARK_COLORS.length] + '; animation-delay:' + (i * 0.15) + 's;">✦</span>';
+    }
+    return '<div class="fusion-sparks' + (count >= 5 ? ' many' : '') + '">' + inner + '</div>';
   }
 
   function generateBook(genre) {
@@ -2150,7 +2180,7 @@
           spine.className = 'book-spine rarity-' + book.rarity;
           spine.style.backgroundColor = def.color;
           spine.innerHTML = '<div class="book-title-vertical">' + book.title + '</div>' +
-            (isFusable(book) ? '<div class="fusion-sparks"><span>✦</span><span>✦</span><span>✦</span></div>' : '');
+            sparklesHtml(sparkleCount(book));
           spine.onclick = function() { showBookReveal(book); };
           shelfDiv.appendChild(spine);
         })();
