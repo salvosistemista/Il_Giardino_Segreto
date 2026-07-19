@@ -1,4 +1,4 @@
-Stesse meccaniche, giochi differenti / Same mechanics, different games.
+Stesse meccaniche, giochi differenti. Entrambi realizzati con l'aiuto di Claude AI / Same mechanics, different games. Both created with the help of Claude AI.
 
 Versione Italiana 🇮🇹
 
