@@ -316,7 +316,7 @@
     </div>
   </div>
   <button class="btn secondary" onclick="closeOptions()" id="btnOptionsClose">CHIUDI</button>
-  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.56</div>
+  <div id="versionLabel" style="margin-top:18px; font-size:0.7rem; color:#8a9a70;">v1.60</div>
 </div>
 
 <div class="overlay hidden" id="shopScreen">
@@ -374,7 +374,7 @@
   <h1 id="infoTitle">COME SI GIOCA</h1>
   <div style="max-width:440px; text-align:left; font-size:0.85rem; line-height:1.6; color:#4f5c3c;" id="infoBody">
     <p><b>🌱 Semina e raccolta.</b> Scegli un seme dalla barra in basso e tocca un lotto libero per piantarlo. Ogni genere ha un tempo di crescita diverso: quando la pianta è matura, toccala per raccogliere un nuovo libro per il tuo catalogo.</p>
-    <p><b>📖 Rarità e fusione.</b> I libri raccolti sono di rarità Comune. Trovando 3 copie identiche (stesso titolo, genere, rarità e condizione) puoi rilegarle in un unico volume di rarità superiore, spendendo Polvere di Pagine.</p>
+    <p><b>📖 Rarità e fusione.</b> I libri raccolti sono di rarità Comune. Trovando 3 copie con stesso titolo, genere e rarità (la condizione non conta) puoi rilegarle in un unico volume di rarità superiore, spendendo Polvere di Pagine.</p>
     <p><b>🔒 Sblocchi.</b> I generi Mistero e Filosofia si sbloccano ottenendo rispettivamente un libro di rarità Antico e Raro. Una volta sbloccati restano tali per sempre.</p>
     <p><b>🍂 Stagioni.</b> Il tempo scorre in cicli di Primavera, Estate, Autunno e Inverno, ognuna con un bonus diverso su crescita o guadagni.</p>
     <p><b>🦉 Ospiti.</b> Un ospite bussa al giardino e resta 1 minuto chiedendo un libro di un genere specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni ospite parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un libro di rarità superiore) in cambio di una ricompensa molto più generosa.</p>
@@ -700,13 +700,13 @@
       infoBodyHtml:
         '<p><b>🌱 Semina e raccolta.</b> Scegli un seme dalla barra in basso e tocca un lotto libero per piantarlo. Ogni genere ha un tempo di crescita diverso: quando la pianta è matura, toccala per raccogliere un nuovo libro per il tuo catalogo.</p>' +
         '<p><b>🌿 Vivaio.</b> I prezzi dei semi cambiano ad ogni stagione: conviene tenerlo d\'occhio per comprare quando costano meno.</p>' +
-        '<p><b>📖 Rarità e fusione.</b> I libri raccolti sono di rarità Comune. Trovando 3 copie identiche (stesso titolo, genere, rarità e condizione) puoi rilegarle in un unico volume di rarità superiore, spendendo Polvere di Pagine — tre scintille colorate in cima alla costina ti avvisano quando un libro è pronto per la fusione.</p>' +
+        '<p><b>📖 Rarità e fusione.</b> I libri raccolti sono di rarità Comune. Trovando 3 copie con stesso titolo, genere e rarità (la condizione non conta) puoi rilegarle in un unico volume di rarità superiore, spendendo Polvere di Pagine — tre scintille colorate in cima alla costina ti avvisano quando un libro è pronto per la fusione.</p>' +
         '<p><b>🔒 Sblocchi.</b> I generi Mistero e Filosofia si sbloccano ottenendo rispettivamente un libro di rarità Antico e Raro. Una volta sbloccati restano tali per sempre.</p>' +
         '<p><b>🍂 Stagioni.</b> Ogni stagione dura 3 minuti e il tempo scorre in cicli di Primavera, Estate, Autunno e Inverno, ognuna con un bonus diverso su crescita o guadagni. Se chiudi il gioco o torni al menu, al rientro sarà passata esattamente un\'altra stagione, non di più.</p>' +
         '<p><b>🦉 Ospiti.</b> Un ospite bussa al giardino e resta 1 minuto chiedendo un libro di un genere specifico (se sei già in dialogo con lui a tempo scaduto, puoi ancora consegnarglielo). Se non hai nulla da dargli e chiudi con "Forse più tardi", se ne va dopo 5 secondi. Ogni ospite parte come Sconosciuto e torna più spesso man mano che sale di grado: Conoscente dopo 3 consegne, Amico dopo altre 5, Caro Amico dopo altre 8 — e le sue visite si infittiscono ad ogni grado. Ai gradi più alti può capitare un regalo a sorpresa oltre al boost, e un Caro Amico a volte porta una richiesta speciale (un libro di rarità superiore) in cambio di una ricompensa molto più generosa.</p>' +
         '<p><b>🌧️ Eventi atmosferici.</b> Pioggia e vento capitano a sorpresa: la pioggia accelera subito le piante, mentre il vento apre una breve finestra da toccare per un bonus di valuta.</p>' +
         '<p><b>📚 Libreria.</b> Qui puoi sfogliare tutti i libri raccolti, ordinarli e filtrarli per genere, rarità o condizione.</p>' +
-        '<p><b>📚 Deperimento.</b> Un libro non consegnato o rifuso entro 12 stagioni (circa 3 anni) viene donato alla biblioteca per il restauro e lascia la tua libreria. Ogni fusione resetta il conto alla rovescia.</p>' +
+        '<p><b>📚 Deperimento.</b> Un libro non consegnato o rifuso entro 20 stagioni di gioco effettivamente giocato (circa un\'ora, non conta il tempo a gioco chiuso) viene donato alla biblioteca per il restauro e lascia la tua libreria. Ogni fusione resetta il conto alla rovescia.</p>' +
         '<p><b>📔 Diario.</b> Racconta quanti semi hai piantato, quanti libri hai raccolto e quanti ne hai donati alla biblioteca nelle ultime 4 stagioni, e mostra gli ospiti che hai conosciuto — con le visite ricevute e l\'ultimo messaggio di gratitudine che ti hanno lasciato.</p>'
     },
     en: {
@@ -794,20 +794,20 @@
       infoBodyHtml:
         '<p><b>🌱 Planting & harvesting.</b> Pick a seed from the bar at the bottom and tap an empty plot to plant it. Each genre has a different growth time: once the plant is ready, tap it to harvest a new book for your library.</p>' +
         '<p><b>🌿 Nursery.</b> Seed prices change with every season — keep an eye out for the cheapest moment to buy.</p>' +
-        '<p><b>📖 Rarity & fusion.</b> Harvested books start at Common rarity. Find 3 identical copies (same title, genre, rarity and condition) to bind them into a single higher-rarity volume, spending Page Dust — three colored sparkles at the top of the spine let you know when a book is ready to be bound.</p>' +
+        '<p><b>📖 Rarity & fusion.</b> Harvested books start at Common rarity. Find 3 copies with the same title, genre and rarity (condition doesn\'t matter) to bind them into a single higher-rarity volume, spending Page Dust — three colored sparkles at the top of the spine let you know when a book is ready to be bound.</p>' +
         '<p><b>🔒 Unlocks.</b> The Mystery and Philosophy genres unlock once you get an Ancient and a Rare book respectively. Once unlocked, they stay unlocked forever.</p>' +
         '<p><b>🍂 Seasons.</b> Each season lasts 3 minutes, flowing in cycles of Spring, Summer, Autumn and Winter, each with a different bonus to growth or earnings. If you close the game or go back to the menu, exactly one more season will have passed when you return — never more.</p>' +
         '<p><b>🦉 Guests.</b> A guest knocks on the garden and stays for 1 minute asking for a book of a specific genre (if you\'re already talking to them when time runs out, you can still hand it over). If you have nothing to give and close with "Maybe Later", they\'ll leave after 5 seconds. Every guest starts as a Stranger and visits more often as their bond grows: Acquaintance after 3 gifts, Friend after 5 more, Dear Friend after 8 more — and their visits become more frequent at each level. At higher levels you may receive a surprise gift on top of the boost, and a Dear Friend sometimes brings a special request (a higher-rarity book) in exchange for a much bigger reward.</p>' +
         '<p><b>🌧️ Weather events.</b> Rain and wind show up unannounced: rain instantly speeds up your plants, while the wind opens a brief window you can tap for a currency bonus.</p>' +
         '<p><b>📚 Library.</b> Here you can browse every book you\'ve collected, sort them and filter by genre, rarity or condition.</p>' +
-        '<p><b>📚 Decay.</b> A book that\'s neither delivered nor re-fused within 12 seasons (about 3 years) gets donated to the library for restoration and leaves your collection. Every fusion resets the countdown.</p>' +
+        '<p><b>📚 Decay.</b> A book that\'s neither delivered nor re-fused within 20 seasons of actual play time (about an hour of real playing — time spent with the game closed doesn\'t count) gets donated to the library for restoration and leaves your collection. Every fusion resets the countdown.</p>' +
         '<p><b>📔 Diary.</b> Tells you how many seeds you\'ve planted, how many books you\'ve harvested, and how many you\'ve donated to the library over the last 4 seasons, and shows the guests you\'ve met — including how many times they\'ve visited and the last thank-you message they left you.</p>'
     }
   };
 
   function ui(key) { return UI_STRINGS[LANG][key]; }
 
-  var GAME_VERSION = '1.56';
+  var GAME_VERSION = '1.60';
 
   function applyFontSize() {
     document.documentElement.style.fontSize = (FONT_SIZE === 'large') ? '19px' : '16px';
@@ -971,7 +971,9 @@
     return Math.floor((vnow() - gameStart) / SEASON_LENGTH);
   }
 
-  var DECAY_SEASONS = 12; // 3 anni di gioco = 12 stagioni
+  var DECAY_SEASONS = 20; // soglia di deperimento, ora espressa in "stagioni di gioco attivo" (vedi activePlaySeconds)
+  var DECAY_PLAY_SECONDS = DECAY_SEASONS * (SEASON_LENGTH / 1000); // secondi di gioco REALMENTE giocato prima del deperimento
+  var activePlaySeconds = 0; // tempo di gioco attivo accumulato: avanza SOLO mentre giochi, mai per il salto stagionale al rientro
   var lastDecayCheck = vnow();
 
   function recordSeasonEvent(field, amount) {
@@ -1022,6 +1024,7 @@
 
   function defaultState() {
     timeOffset = 0;
+    activePlaySeconds = 0;
     gameStart = vnow();
     currency = 0;
     seedInventory = {};
@@ -1050,7 +1053,7 @@
         gameStart: gameStart, currency: currency, seedInventory: seedInventory, plots: plots, catalog: catalog,
         activeGuest: activeGuest, growthHasteUntil: growthHasteUntil, growthHasteMultiplier: growthHasteMultiplier,
         unlockedGenres: unlockedGenres, guestRelations: guestRelations, seasonStats: seasonStats,
-        timeOffset: timeOffset, savedRealNow: Date.now()
+        timeOffset: timeOffset, savedRealNow: Date.now(), activePlaySeconds: activePlaySeconds
       }));
     } catch(e) {}
   }
@@ -1079,10 +1082,12 @@
     guestCooldownMs = GUEST_TIER_COOLDOWN_SECONDS[0] * 1000;
     seasonStats = raw.seasonStats || {};
     diaryGuestIndex = 0;
+    activePlaySeconds = raw.activePlaySeconds || 0;
     
     catalog.forEach(function(b) {
       if (!b.id) b.id = 'bk_' + b.harvestedAt + '_' + Math.floor(Math.random()*1000);
       if (b.rarity === undefined) b.rarity = 0;
+      if (b.bornAtPlay === undefined) b.bornAtPlay = activePlaySeconds; // salvataggi precedenti: il conto riparte da ora
     });
 
     selectedGenre = 'fiaba';
@@ -1331,6 +1336,7 @@
     lastPassiveTick = now;
 
     if (state === 'title' || (state === 'info' && previousStateBeforeInfo === 'title')) return;
+    activePlaySeconds += Math.max(0, delta);
     if (catalog.length > 0) {
       var totalIncomePerSecond = 0;
       for (var i = 0; i < catalog.length; i++) {
@@ -1412,13 +1418,12 @@
       }
     }
 
-    // 5. Deperimento: i libri troppo vecchi (8 stagioni) vengono donati alla biblioteca
+    // 5. Deperimento: i libri non toccati per troppo tempo di gioco reale vengono donati alla biblioteca
     if (now - lastDecayCheck > 15000) {
       lastDecayCheck = now;
-      var decayMs = SEASON_LENGTH * DECAY_SEASONS;
       var donatedCount = 0;
       for (var di = catalog.length - 1; di >= 0; di--) {
-        if (now - catalog[di].harvestedAt > decayMs) {
+        if (activePlaySeconds - catalog[di].bornAtPlay > DECAY_PLAY_SECONDS) {
           catalog.splice(di, 1);
           donatedCount++;
         }
@@ -1699,13 +1704,13 @@
     ensureAudio(); handleTap(e.clientX, e.clientY);
   });
 
-  // Vero se esistono almeno 3 copie identiche (titolo+genere+rarità+condizione) e la rarità non è già al massimo
+  // Vero se esistono almeno 3 copie identiche (titolo+genere+rarità) e la rarità non è già al massimo
   function isFusable(book) {
     if (book.rarity >= 3) return false;
     var n = 0;
     for (var i = 0; i < catalog.length; i++) {
       var b = catalog[i];
-      if (b.title === book.title && b.genre === book.genre && b.rarity === book.rarity && b.condition === book.condition) {
+      if (b.title === book.title && b.genre === book.genre && b.rarity === book.rarity) {
         n++;
         if (n >= 3) return true;
       }
@@ -1726,7 +1731,7 @@
 
     return { 
       id: uniqueId, genre: genre, title: title, blurb: blurb, rarity: 0, 
-      pages: randomPages, condition: randomCondition, harvestedAt: vnow() 
+      pages: randomPages, condition: randomCondition, harvestedAt: vnow(), bornAtPlay: activePlaySeconds
     };
   }
 
@@ -1754,7 +1759,7 @@
     if (book.rarity < 3) {
       var nextRarityDef = RARITIES[book.rarity + 1];
       var matches = catalog.filter(function(b) { 
-        return b.title === book.title && b.genre === book.genre && b.rarity === book.rarity && b.condition === book.condition; 
+        return b.title === book.title && b.genre === book.genre && b.rarity === book.rarity; 
       }).length;
       
       craftBtn.textContent = ui('craftBtnText').replace('{n}', matches).replace('{cost}', nextRarityDef.cost);
@@ -1782,7 +1787,7 @@
     
     var indicesToRemove = [];
     for (var i = 0; i < catalog.length; i++) {
-      if (catalog[i].title === book.title && catalog[i].genre === book.genre && catalog[i].rarity === book.rarity && catalog[i].condition === book.condition) {
+      if (catalog[i].title === book.title && catalog[i].genre === book.genre && catalog[i].rarity === book.rarity) {
         indicesToRemove.push(i);
         if (indicesToRemove.length === 3) break;
       }
@@ -1798,7 +1803,7 @@
       id: 'bk_' + vnow() + '_' + Math.floor(Math.random()*10000),
       genre: book.genre, title: rarityPrefix(nextRarity) + book.title, 
       blurb: FUSING_BLURBS[LANG][Math.floor(Math.random() * FUSING_BLURBS[LANG].length)],
-      rarity: nextRarity, pages: book.pages + 60, condition: ui('boundMasterpiece'), harvestedAt: vnow()
+      rarity: nextRarity, pages: book.pages + 60, condition: ui('boundMasterpiece'), harvestedAt: vnow(), bornAtPlay: activePlaySeconds
     };
     
     catalog.push(upgradedBook);
